@@ -64,7 +64,7 @@
         </div>
         
         <div class="flex flex-col space-y-3 pt-6">
-            <button onclick="login()" id="auth-action-btn" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 py-3.5 rounded-xl font-bold text-white shadow-lg shadow-cyan-900/50 hover:opacity-90 transition">Sign In Workspace</button>
+            <button onclick="login()" id="auth-action-btn" class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 py-3.5 rounded-xl font-bold text-white shadow-lg shadow-cyan-900/50 hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed">Sign In Workspace</button>
             
             <div class="flex justify-between items-center pt-2 px-1">
                 <button onclick="toggleSignup()" id="mode-text" class="text-[11px] text-gray-400 hover:text-cyan-400 font-bold underline transition">Create New Account</button>
@@ -84,7 +84,7 @@
                     <i id="header-avatar-icon" class="fa-solid fa-user"></i>
                 </div>
                 <div>
-                    <h1 class="text-sm font-black text-white tracking-tight uppercase" id="user-display-name">LOADING PROFILE...</h1>
+                    <h1 class="text-sm font-black text-white tracking-tight uppercase" id="user-display-name">Active User</h1>
                     <p class="text-[11px] text-gray-400 font-mono" id="user-display-username">@fetching</p>
                 </div>
             </div>
@@ -164,6 +164,13 @@
         </div>
 
         <div id="view-wallet" class="view-page space-y-6">
+            <div class="bg-gradient-to-br from-cyan-950/30 via-gray-900 to-gray-950 p-4.5 rounded-2xl border border-cyan-500/10">
+                <h4 class="text-xs font-bold text-cyan-400 flex items-center gap-1.5"><i class="fa-solid fa-shield-halved"></i> Automated Payout Infrastructure</h4>
+                <p class="text-[11px] text-gray-400 mt-1.5 leading-relaxed font-medium">
+                    Your financial safety is our absolute priority. Secure blockchain routing enables lighting fast clearance. Ensure correct wallet network protocols to maintain zero friction processing.
+                </p>
+            </div>
+
             <h3 class="text-base font-bold text-white mb-2">Withdraw Assets</h3>
             <div class="bg-gray-900 p-5 rounded-2xl border border-gray-800 space-y-4">
                 
@@ -184,7 +191,7 @@
                 <div class="space-y-1.5">
                     <div class="flex justify-between items-center">
                         <label class="text-[10px] font-bold tracking-wider text-gray-400 uppercase">Payout Allocation Amount</label>
-                        <span class="text-[9px] bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-0.5 rounded font-black">MIN $30 - MAX $500</span>
+                        <span class="text-[9px] bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-2 py-0.5 rounded font-black">MIN $30 - MAX $500</span>
                     </div>
                     <input type="number" id="withdraw-amount" placeholder="Amount (USD)" class="w-full bg-gray-950 p-4 rounded-xl border border-gray-800 text-sm text-white font-bold outline-none focus:border-cyan-500">
                 </div>
@@ -196,6 +203,13 @@
         <div id="view-referrals" class="view-page space-y-6">
             <h3 class="text-base font-bold text-white mb-2">Invite & Earn 10% Commission</h3>
             
+            <div class="bg-gradient-to-br from-purple-950/30 via-gray-900 to-gray-950 p-4.5 rounded-2xl border border-purple-500/10 mb-2">
+                <h4 class="text-xs font-bold text-purple-400 flex items-center gap-1.5"><i class="fa-solid fa-users-rays"></i> Why Build Your Affiliate Network?</h4>
+                <p class="text-[11px] text-gray-400 mt-1.5 leading-relaxed font-medium">
+                    Unlock massive passive distribution loops! Invite your network and instantly lock a **10% recurring lifestyle commission** on every advertisement, short video stream, or digital task they ever complete inside the ecosystem. Uncapped income, updated real-time.
+                </p>
+            </div>
+
             <div class="bg-gradient-to-b from-gray-900 to-gray-950 p-6 rounded-3xl border border-cyan-500/10 shadow-xl text-center relative overflow-hidden">
                 <div class="absolute -right-4 -top-4 text-cyan-500/5 text-6xl font-black pointer-events-none"><i class="fa-solid fa-users"></i></div>
                 <p class="text-[10px] text-gray-400 uppercase tracking-widest mb-1 font-semibold">Total Referral Earnings</p>
@@ -203,7 +217,7 @@
 
                 <p class="text-[11px] text-gray-400 mb-2">Your Premium Invitation Link</p>
                 <div class="flex items-center space-x-2 bg-gray-950 p-2 rounded-xl border border-gray-800">
-                    <input type="text" id="ref-link" readonly value="https://ntearnhub.com/join" class="flex-1 bg-transparent text-[11px] text-gray-500 outline-none px-2 font-mono text-cyan-400">
+                    <input type="text" id="ref-link" readonly value="https://ntearnhub.com/join" class="flex-1 bg-transparent text-[11px] text-cyan-400 outline-none px-2 font-mono">
                     <button onclick="copyReferralLink()" class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition">Copy</button>
                 </div>
             </div>
@@ -228,7 +242,7 @@
                     <i id="profile-avatar-icon" class="fa-solid fa-user text-2xl"></i>
                 </div>
                 <div class="space-y-0.5">
-                    <h4 class="text-base font-black text-white tracking-tight" id="profile-fullname">Loading Profile...</h4>
+                    <h4 class="text-base font-black text-white tracking-tight" id="profile-fullname">Active Worker</h4>
                     <p class="text-xs text-cyan-400 font-mono font-medium" id="profile-username">@fetching</p>
                     <p class="text-[11px] text-gray-500 font-medium" id="profile-email">email@domain.com</p>
                     <span id="profile-country" class="inline-block text-[10px] bg-gray-800 text-gray-400 px-2.5 py-0.5 rounded-full font-bold uppercase mt-1">Global</span>
@@ -375,11 +389,11 @@
                         const data = snapshot.val();
                         if (data) {
                             const cleanUsername = data.username || "user";
-                            document.getElementById('user-display-name').innerText = data.fullname || "User Element";
+                            document.getElementById('user-display-name').innerText = data.fullname || "Active User";
                             document.getElementById('user-display-username').innerText = "@" + cleanUsername;
                             
                             // Auto Pre-fill Profile view fields
-                            document.getElementById('profile-fullname').innerText = data.fullname || "User Element";
+                            document.getElementById('profile-fullname').innerText = data.fullname || "Active User";
                             document.getElementById('profile-username').innerText = "@" + cleanUsername;
                             document.getElementById('profile-email').innerText = user.email || "";
                             document.getElementById('profile-country').innerText = data.country || "Global";
@@ -451,17 +465,14 @@
     function switchView(viewId, categoryTitle = '') {
         const views = ['dashboard', 'tasks', 'wallet', 'referrals', 'history', 'profile', 'support'];
         
-        // Remove active class from all pages
         views.forEach(v => {
             const el = document.getElementById('view-' + v);
             if(el) el.classList.remove('active-view');
         });
         
-        // Add active class to target page
         const targetView = document.getElementById('view-' + viewId);
         if(targetView) targetView.classList.add('active-view');
         
-        // Update Bottom Nav Colors
         views.forEach(v => {
             const btn = document.getElementById('nav-' + v);
             if(btn) { btn.classList.remove('text-cyan-400'); btn.classList.add('text-gray-500'); }
@@ -506,7 +517,6 @@
         });
     }
 
-    // Modal Engine with Hide/Show Close Button capability
     function showModal(type, title, msg, showCloseBtn = true) {
         document.getElementById('modal-title').innerText = title;
         document.getElementById('modal-message').innerText = msg;
@@ -523,7 +533,6 @@
     
     function closeModal() { document.getElementById('custom-modal').classList.add('hidden'); }
 
-    // Enhanced Task Logic with 30-Second Modal Timer and Referral Commission Routing
     function executeTask(id, reward, url) {
         let timeLeft = 30;
         showModal('Task Tracking Active', `Time remaining: ${timeLeft}s. Keep the ad window open!`, '', false);
@@ -543,13 +552,11 @@
                     db.ref('users/' + userUid).once('value').then(snap => {
                         const userData = snap.val();
                         
-                        // Add reward to main user balance
                         db.ref('users/' + userUid).transaction(current => {
                             if (current) current.balance = (current.balance || 0) + reward;
                             return current;
                         });
 
-                        // 10% Automated Referral Commission Routing
                         if(userData && userData.referredBy) {
                             const commission = reward * 0.10;
                             
@@ -557,7 +564,6 @@
                                 if(refSnap.exists()) {
                                     const referrerUid = Object.keys(refSnap.val())[0];
                                     
-                                    // Update Referrer Balance
                                     db.ref('users/' + referrerUid).transaction(refData => {
                                         if(refData) {
                                             refData.balance = (refData.balance || 0) + commission;
@@ -566,7 +572,6 @@
                                         return refData;
                                     });
 
-                                    // Add Log for transparent display
                                     db.ref('referrals/' + referrerUid).push({
                                         fromUser: userData.fullname,
                                         commission: commission,
@@ -577,7 +582,6 @@
                         }
                     });
                     
-                    // Show final success modal
                     showModal('Verification Successful', `Task complete! $${reward.toFixed(2)} has been credited to your balance.`, '', true);
                 }
             }
@@ -592,7 +596,6 @@
         showModal('info', 'Copied to Clipboard!', 'Share this secure link with your network to earn a lifetime 10% commission on their earnings.', true);
     }
 
-    // Wallet Logic with Min ($30) and Max ($500) Verification
     function executeWithdrawalRequest() {
         const net = document.getElementById('withdraw-network').value;
         const addr = document.getElementById('withdraw-address').value.trim();
@@ -755,8 +758,14 @@
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value.trim();
         const isSignup = !document.getElementById('signup-fields').classList.contains('hidden');
+        const authBtn = document.getElementById('auth-action-btn');
         
         if(!email || !password) return;
+        
+        // Disable button immediately to completely freeze double submission
+        authBtn.disabled = true;
+        const originalText = authBtn.innerText;
+        authBtn.innerText = isSignup ? "Creating Secure Account..." : "Signing In Workspace...";
         
         if(isSignup) {
             const name = document.getElementById('fullname').value.trim();
@@ -765,30 +774,46 @@
             
             if(!name || !userRef || !country) {
                 showModal('error', 'Fields Blank', 'Please fill in all details, including choosing your country.', true);
+                authBtn.disabled = false;
+                authBtn.innerText = originalText;
                 return;
             }
             
             auth.createUserWithEmailAndPassword(email, password).then(cred => {
-                cred.user.sendEmailVerification();
-                return db.ref('users/' + cred.user.uid).set({
-                    fullname: name, 
-                    username: userRef, 
-                    country: country, 
-                    balance: 0.0, 
-                    pending: 0.0,
-                    refEarnings: 0.0,
-                    referredBy: refCodeFromUrl
+                return cred.user.sendEmailVerification().then(() => {
+                    return db.ref('users/' + cred.user.uid).set({
+                        fullname: name, 
+                        username: userRef, 
+                        country: country, 
+                        balance: 0.0, 
+                        pending: 0.0,
+                        refEarnings: 0.0,
+                        referredBy: refCodeFromUrl
+                    });
                 });
             }).then(() => {
-                showModal('info', 'Verification Link Sent', 'Account created! Please check your email inbox (and spam folder) to verify your account before accessing the workspace.', true);
-            }).catch(err => showModal('error', 'Registration Failed', err.message, true));
+                showModal('info', 'Verification Link Sent', 'Account created successfully! We have dispatched a verification link to your registered email address. Please verify your email before accessing the workspace.', true);
+                toggleSignup();
+                document.getElementById('email').value = '';
+                document.getElementById('password').value = '';
+            }).catch(err => {
+                showModal('error', 'Registration Failed', err.message, true);
+            }).finally(() => {
+                authBtn.disabled = false;
+                authBtn.innerText = originalText;
+            });
         } else {
             auth.signInWithEmailAndPassword(email, password).then(cred => {
                 if(!cred.user.emailVerified) {
                     showModal('warning', 'Email Unverified', 'Please verify your email address to access your workspace. Check your inbox.', true);
                     auth.signOut();
                 }
-            }).catch(err => showModal('error', 'Access Denied', err.message, true));
+            }).catch(err => {
+                showModal('error', 'Access Denied', err.message, true);
+            }).finally(() => {
+                authBtn.disabled = false;
+                authBtn.innerText = originalText;
+            });
         }
     }
 
