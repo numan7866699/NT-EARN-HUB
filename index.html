@@ -5,83 +5,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NT Global Hub | Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        .view-page { display: none; width: 100%; }
+        .active-view { display: block; }
         .premium-dark { background: #0a0a0a; }
         .glass-panel { background: #111827; border: 1px solid #1f2937; }
     </style>
 </head>
-<body class="premium-dark text-gray-200 font-sans min-h-screen">
+<body class="premium-dark text-gray-200 font-sans h-screen overflow-hidden">
 
-<!-- Modal -->
-<div id="modal-container" class="hidden fixed inset-0 z-[999] bg-black/90 flex items-center justify-center p-4">
-    <div class="bg-gray-900 w-full max-w-sm rounded-3xl p-6 border border-gray-700 text-center">
-        <h3 id="modal-title" class="text-white font-bold text-lg">Alert</h3>
-        <p id="modal-body" class="text-xs text-gray-400 mt-2"></p>
-        <button id="modal-btn" onclick="closeModal()" class="mt-6 w-full bg-cyan-600 py-3 rounded-xl text-white text-xs font-bold">Close</button>
-    </div>
-</div>
-
-<!-- Auth (Same as before) -->
-<div id="auth-section" class="max-w-md mx-auto p-6 pt-12">
-    <h2 class="text-3xl font-black text-center text-cyan-400 mb-8">NT GLOBAL HUB</h2>
-    <div class="glass-panel p-6 rounded-3xl space-y-4">
-        <div id="signup-fields" class="hidden space-y-4">
-            <input type="text" id="fullname" placeholder="Full Name" class="w-full bg-black p-4 rounded-xl border border-gray-800 text-sm">
-            <input type="text" id="reg-username" placeholder="Username" class="w-full bg-black p-4 rounded-xl border border-gray-800 text-sm">
-        </div>
-        <input type="email" id="email" placeholder="Email Address" class="w-full bg-black p-4 rounded-xl border border-gray-800 text-sm">
-        <input type="password" id="password" placeholder="Password" class="w-full bg-black p-4 rounded-xl border border-gray-800 text-sm">
-        <button onclick="handleAuth()" id="auth-action-btn" class="w-full bg-cyan-600 py-3.5 rounded-xl font-bold">Sign In</button>
-        <button onclick="toggleMode()" id="mode-text" class="text-[10px] text-gray-500 w-full underline">Don't have account? Register</button>
-    </div>
-</div>
-
-<!-- Main App -->
-<div id="app-section" class="hidden max-w-md mx-auto h-screen flex flex-col">
-    <main class="flex-1 overflow-y-auto p-4 pb-24 space-y-6">
+<!-- Main App Container -->
+<div id="app-section" class="max-w-md mx-auto h-full flex flex-col">
+    
+    <!-- Scrollable Content Area -->
+    <main class="flex-1 overflow-y-auto p-4 pb-20">
         
-        <!-- Dashboard -->
-        <div id="view-dashboard" class="space-y-4">
-            <h2 class="text-lg font-black text-white">Welcome to NT EARN HUB</h2>
+        <!-- DASHBOARD -->
+        <div id="view-dashboard" class="view-page active-view space-y-4">
+            <h2 class="text-lg font-black text-white">Welcome, Numan</h2>
             <div class="glass-panel p-6 rounded-3xl text-center">
                 <p class="text-[10px] text-gray-400 uppercase">Total Balance</p>
-                <h3 class="text-4xl font-black text-cyan-400 mt-2" id="bal-text">$0.00</h3>
+                <h3 class="text-4xl font-black text-cyan-400 mt-2">$0.00</h3>
             </div>
             <div class="grid grid-cols-2 gap-3">
-                <button onclick="openTaskList('Watch Ads')" class="bg-gray-900 p-4 rounded-2xl border border-gray-800 text-xs text-left hover:border-cyan-500">📺<br>Watch Ads</button>
-                <button onclick="openTaskList('Short Videos')" class="bg-gray-900 p-4 rounded-2xl border border-gray-800 text-xs text-left hover:border-cyan-500">🎬<br>Short Videos</button>
-                <button onclick="openTaskList('Micro Tasks')" class="bg-gray-900 p-4 rounded-2xl border border-gray-800 text-xs text-left hover:border-cyan-500">📋<br>Micro Tasks</button>
-                <button onclick="switchTab('referrals')" class="bg-gray-900 p-4 rounded-2xl border border-gray-800 text-xs text-left hover:border-cyan-500">👥<br>Refer to Earn</button>
+                <button onclick="openTaskList()" class="bg-gray-900 p-4 rounded-2xl border border-gray-800 text-xs text-left">📺 Watch Ads</button>
+                <button onclick="openTaskList()" class="bg-gray-900 p-4 rounded-2xl border border-gray-800 text-xs text-left">🎬 Videos</button>
             </div>
         </div>
 
-        <!-- Task List View (New) -->
-        <div id="view-task-list" class="hidden space-y-4">
-            <button onclick="switchTab('dashboard')" class="text-xs text-gray-400"><i class="fa-solid fa-arrow-left"></i> Back</button>
-            <h2 id="task-list-title" class="text-lg font-bold text-white">Available Tasks</h2>
-            <div id="tasks-container" class="space-y-3">
-                <!-- Tasks will be injected here -->
+        <!-- WALLET -->
+        <div id="view-wallet" class="view-page space-y-4">
+            <h2 class="text-lg font-bold text-white mb-4">Withdraw Funds</h2>
+            <div class="glass-panel p-6 rounded-3xl space-y-4">
+                <select class="w-full bg-black p-4 rounded-xl border border-gray-800 text-sm text-gray-300">
+                    <option>Select Network (BEP-20 / TRC-20)</option>
+                    <option>USDT BEP-20</option>
+                    <option>USDT TRC-20</option>
+                </select>
+                <input type="text" placeholder="Enter Wallet Address" class="w-full bg-black p-4 rounded-xl border border-gray-800 text-sm">
+                <input type="number" placeholder="Amount ($30 - $500)" class="w-full bg-black p-4 rounded-xl border border-gray-800 text-sm">
+                <button onclick="alert('Request sent')" class="w-full bg-cyan-600 py-4 rounded-xl font-bold">Request Withdrawal</button>
             </div>
         </div>
 
-        <!-- Other Tabs -->
-        <div id="view-wallet" class="hidden space-y-4">
-            <h2 class="text-lg font-bold text-white">Wallet</h2>
-            <div class="glass-panel p-6 rounded-3xl text-sm">
-                <p>Withdrawal Limit: $30 - $500/day.</p>
-                <button onclick="alert('Proceeding...')" class="w-full bg-cyan-600 mt-4 py-3 rounded-xl font-bold">Request Withdrawal</button>
+        <!-- REFERRALS -->
+        <div id="view-referrals" class="view-page space-y-4">
+            <h2 class="text-lg font-bold text-white">Team Rewards</h2>
+            <div class="glass-panel p-6 rounded-3xl">
+                <p class="text-xs text-gray-400">Your Referral Link:</p>
+                <input type="text" readonly value="ntglobalhub.com/ref/me" class="w-full bg-black p-3 mt-2 rounded border border-gray-800 text-xs text-cyan-400 text-center">
             </div>
         </div>
-        <div id="view-referrals" class="hidden space-y-4"><h2 class="text-lg font-bold text-white">Team Rewards</h2></div>
-        <div id="view-profile" class="hidden space-y-4 text-center"><h2 class="text-lg font-bold text-white">Profile</h2></div>
-        <div id="view-contact" class="hidden space-y-4"><h2 class="text-lg font-bold text-white">Support</h2></div>
+
+        <!-- PROFILE -->
+        <div id="view-profile" class="view-page space-y-4">
+            <h2 class="text-lg font-bold text-white">Profile</h2>
+            <div class="glass-panel p-6 rounded-3xl">
+                <div class="text-sm">Account Status: <span class="text-green-500 font-bold">Verified</span></div>
+                <button class="mt-4 w-full bg-gray-800 p-3 rounded-xl text-xs">Edit Details</button>
+            </div>
+        </div>
+
+        <!-- SUPPORT -->
+        <div id="view-contact" class="view-page space-y-4">
+            <h2 class="text-lg font-bold text-white">Support</h2>
+            <div class="glass-panel p-6 rounded-3xl space-y-3">
+                <input type="text" placeholder="Subject" class="w-full bg-black p-3 rounded-xl border border-gray-800 text-sm">
+                <textarea placeholder="Your Message" class="w-full bg-black p-3 rounded-xl border border-gray-800 text-sm h-32"></textarea>
+                <button class="w-full bg-cyan-600 py-3 rounded-xl font-bold">Send Message</button>
+            </div>
+        </div>
     </main>
 
-    <nav class="bg-gray-900 border-t border-gray-800 p-4 flex justify-between fixed bottom-0 w-full max-w-md">
+    <!-- Bottom Navigation -->
+    <nav class="bg-gray-950 border-t border-gray-800 p-4 flex justify-between items-center h-16">
         <button onclick="switchTab('dashboard')"><i class="fa-solid fa-house"></i></button>
         <button onclick="switchTab('wallet')"><i class="fa-solid fa-wallet"></i></button>
         <button onclick="switchTab('referrals')"><i class="fa-solid fa-users"></i></button>
@@ -91,61 +89,18 @@
 </div>
 
 <script>
-    const firebaseConfig = { apiKey: "AIzaSyDLEnhC545LNW9GyKfWaJPJCrOKUotYqpY", authDomain: "nt-earn-hub.firebaseapp.com", databaseURL: "https://nt-earn-hub-default-rtdb.firebaseio.com", projectId: "nt-earn-hub", storageBucket: "nt-earn-hub.firebasestorage.app", messagingSenderId: "606638253911", appId: "1:606638253911:web:77a1c0323c2e70afcc4012" };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.database();
-
-    function openTaskList(cat) {
-        document.getElementById('task-list-title').innerText = cat;
-        const container = document.getElementById('tasks-container');
-        container.innerHTML = `
-            <div class="glass-panel p-4 rounded-2xl flex justify-between items-center">
-                <div><h4 class="text-xs font-bold text-white">Task #1</h4><p class="text-[10px] text-gray-500">Reward: $0.15 | 30s</p></div>
-                <button onclick="launchTask(0.15, 'https://google.com')" class="bg-cyan-600 px-4 py-2 rounded-xl text-xs font-bold">Launch</button>
-            </div>
-        `;
-        switchTab('task-list');
-    }
-
-    function switchTab(tab) {
-        // Reset all views
-        ['dashboard', 'task-list', 'wallet', 'referrals', 'profile', 'contact'].forEach(id => {
-            document.getElementById('view-' + id).classList.add('hidden');
+    function switchTab(tabId) {
+        // Hide all
+        document.querySelectorAll('.view-page').forEach(page => {
+            page.classList.remove('active-view');
         });
-        // Show selected
-        document.getElementById('view-' + tab).classList.remove('hidden');
+        // Show target
+        document.getElementById('view-' + tabId).classList.add('active-view');
     }
-
-    // Logic for Task Launch
-    function launchTask(reward, url) {
-        let timer = 30;
-        showModal('Active', 'Timer: 30s. Keep window open.');
-        window.open(url, '_blank');
-        const interval = setInterval(() => {
-            timer--;
-            document.getElementById('modal-body').innerText = 'Time remaining: ' + timer + 's';
-            if(timer <= 0) {
-                clearInterval(interval);
-                db.ref('users/' + auth.currentUser.uid + '/balance').transaction(b => (b || 0) + reward);
-                showModal('Success', 'Reward $'+reward+' credited!');
-            }
-        }, 1000);
-    }
-
-    // UI & Auth Helpers
-    function showModal(t, b) { document.getElementById('modal-title').innerText = t; document.getElementById('modal-body').innerText = b; document.getElementById('modal-container').classList.remove('hidden'); }
-    function closeModal() { document.getElementById('modal-container').classList.add('hidden'); }
-    function toggleMode() { document.getElementById('signup-fields').classList.toggle('hidden'); document.getElementById('auth-action-btn').innerText = document.getElementById('signup-fields').classList.contains('hidden') ? "Sign In" : "Register"; }
-    function handleAuth() { /* Keep existing auth logic */ }
     
-    // Auth Listener
-    auth.onAuthStateChanged(user => {
-        if(user && user.emailVerified) {
-            document.getElementById('auth-section').classList.add('hidden');
-            document.getElementById('app-section').classList.remove('hidden');
-        }
-    });
+    function openTaskList() {
+        alert("Task list loading...");
+    }
 </script>
 </body>
 </html>
