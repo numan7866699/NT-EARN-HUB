@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NT Earn Hub | Secure Workspace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -15,13 +15,13 @@
         @keyframes modalIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .modal-animate { animation: modalIn 0.2s ease-out forwards; }
         
-        /* Navigation Fix Engine */
+        /* Navigation View Controls */
         .view-page { display: none; width: 100%; animation: fadeIn 0.3s ease-in-out; }
         .active-view { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="bg-gray-950 text-gray-200 font-sans min-h-screen selection:bg-cyan-500 pb-24">
+<body class="bg-gray-950 text-gray-200 font-sans h-[100dvh] overflow-hidden selection:bg-cyan-500 selection:text-black flex flex-col justify-between">
 
 <div id="custom-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 fancy-blur">
     <div class="bg-gradient-to-b from-gray-900 to-gray-950 w-full max-w-sm rounded-3xl border border-gray-800 p-6 shadow-2xl shadow-cyan-950/30 modal-animate text-center">
@@ -74,7 +74,7 @@
     </div>
 </div>
 
-<div id="app-ui" class="hidden flex flex-col h-full max-w-md mx-auto">
+<div id="app-ui" class="hidden flex flex-col h-full max-w-md mx-auto w-full overflow-hidden">
     
     <header class="bg-gray-900/95 border-b border-gray-800 p-4 sticky top-0 z-50 backdrop-blur-md shrink-0">
         <div class="flex justify-between items-center">
@@ -92,7 +92,7 @@
         </div>
     </header>
 
-    <main class="flex-1 overflow-y-auto p-4 space-y-6 pb-24 relative">
+    <main class="flex-1 overflow-y-auto p-4 space-y-6 pb-28 relative">
         
         <div id="view-dashboard" class="view-page active-view space-y-6">
             <div class="bg-gradient-to-br from-cyan-950/40 via-gray-900 to-gray-900/80 p-5 rounded-3xl border border-cyan-500/10 shadow-xl relative overflow-hidden group">
@@ -164,7 +164,7 @@
         </div>
 
         <div id="view-wallet" class="view-page space-y-6">
-            <div class="bg-gradient-to-br from-cyan-950/30 via-gray-900 to-gray-950 p-4.5 rounded-2xl border border-cyan-500/10">
+            <div class="bg-gradient-to-br from-cyan-950/30 via-gray-900 to-gray-950 p-4 rounded-2xl border border-cyan-500/10">
                 <h4 class="text-xs font-bold text-cyan-400 flex items-center gap-1.5"><i class="fa-solid fa-shield-halved"></i> Automated Payout Infrastructure</h4>
                 <p class="text-[11px] text-gray-400 mt-1.5 leading-relaxed font-medium">
                     Your financial safety is our absolute priority. Secure blockchain routing enables lighting fast clearance. Ensure correct wallet network protocols to maintain zero friction processing.
@@ -203,7 +203,7 @@
         <div id="view-referrals" class="view-page space-y-6">
             <h3 class="text-base font-bold text-white mb-2">Invite & Earn 10% Commission</h3>
             
-            <div class="bg-gradient-to-br from-purple-950/30 via-gray-900 to-gray-950 p-4.5 rounded-2xl border border-purple-500/10 mb-2">
+            <div class="bg-gradient-to-br from-purple-950/30 via-gray-900 to-gray-950 p-4 rounded-2xl border border-purple-500/10 mb-2">
                 <h4 class="text-xs font-bold text-purple-400 flex items-center gap-1.5"><i class="fa-solid fa-users-rays"></i> Why Build Your Affiliate Network?</h4>
                 <p class="text-[11px] text-gray-400 mt-1.5 leading-relaxed font-medium">
                     Unlock massive passive distribution loops! Invite your network and instantly lock a **10% recurring lifestyle commission** on every advertisement, short video stream, or digital task they ever complete inside the ecosystem. Uncapped income, updated real-time.
@@ -341,14 +341,28 @@
 
     </main>
 
-    <nav class="bg-gray-900 border-t border-gray-800 px-4 py-3 shrink-0">
-        <div class="flex justify-between items-center">
-            <button onclick="switchView('dashboard')" class="flex flex-col items-center space-y-1 text-cyan-400 nav-btn" id="nav-dashboard"><i class="fa-solid fa-house text-sm"></i><span class="text-[9px] font-bold">Home</span></button>
-            <button onclick="switchView('wallet')" class="flex flex-col items-center space-y-1 text-gray-500 nav-btn" id="nav-wallet"><i class="fa-solid fa-wallet text-sm"></i><span class="text-[9px] font-bold">Wallet</span></button>
-            <button onclick="switchView('referrals')" class="flex flex-col items-center space-y-1 text-gray-500 nav-btn" id="nav-referrals"><i class="fa-solid fa-users text-sm"></i><span class="text-[9px] font-bold">Invite</span></button>
-            <button onclick="switchView('history')" class="flex flex-col items-center space-y-1 text-gray-500 nav-btn" id="nav-history"><i class="fa-solid fa-clock-rotate-left text-sm"></i><span class="text-[9px] font-bold">Ledger</span></button>
-            <button onclick="switchView('profile')" class="flex flex-col items-center space-y-1 text-gray-500 nav-btn" id="nav-profile"><i class="fa-solid fa-user text-sm"></i><span class="text-[9px] font-bold">Profile</span></button>
-        </div>
+    <!-- Optimized Fixed Bottom Navigation Architecture -->
+    <nav class="bg-gray-900 border-t border-gray-800 px-2 h-20 shrink-0 flex items-center justify-between sticky bottom-0 left-0 right-0 z-50 w-full shadow-[0_-10px_25px_-5px_rgba(0,0,0,0.7)]">
+        <button onclick="switchView('dashboard')" class="flex flex-col items-center justify-center space-y-1.5 text-cyan-400 flex-1 h-full nav-btn" id="nav-dashboard">
+            <i class="fa-solid fa-house text-xl"></i>
+            <span class="text-[10px] font-black tracking-wide">Home</span>
+        </button>
+        <button onclick="switchView('wallet')" class="flex flex-col items-center justify-center space-y-1.5 text-gray-500 flex-1 h-full nav-btn" id="nav-wallet">
+            <i class="fa-solid fa-wallet text-xl"></i>
+            <span class="text-[10px] font-black tracking-wide">Wallet</span>
+        </button>
+        <button onclick="switchView('referrals')" class="flex flex-col items-center justify-center space-y-1.5 text-gray-500 flex-1 h-full nav-btn" id="nav-referrals">
+            <i class="fa-solid fa-users text-xl"></i>
+            <span class="text-[10px] font-black tracking-wide">Invite</span>
+        </button>
+        <button onclick="switchView('history')" class="flex flex-col items-center justify-center space-y-1.5 text-gray-500 flex-1 h-full nav-btn" id="nav-history">
+            <i class="fa-solid fa-clock-rotate-left text-xl"></i>
+            <span class="text-[10px] font-black tracking-wide">Ledger</span>
+        </button>
+        <button onclick="switchView('profile')" class="flex flex-col items-center justify-center space-y-1.5 text-gray-500 flex-1 h-full nav-btn" id="nav-profile">
+            <i class="fa-solid fa-user text-xl"></i>
+            <span class="text-[10px] font-black tracking-wide">Profile</span>
+        </button>
     </nav>
 </div>
 
@@ -762,7 +776,6 @@
         
         if(!email || !password) return;
         
-        // Disable button immediately to completely freeze double submission
         authBtn.disabled = true;
         const originalText = authBtn.innerText;
         authBtn.innerText = isSignup ? "Creating Secure Account..." : "Signing In Workspace...";
