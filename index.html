@@ -3,119 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NT Earn Hub | Secure Workspace</title>
+    <title>NT Global Hub | Pro Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .fancy-blur { backdrop-filter: blur(12px); }
-        .modal-animate { animation: modalIn 0.2s ease-out forwards; }
-        @keyframes modalIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .premium-dark { background: #0a0a0a; }
+        .glass-panel { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(12px); border: 1px solid #374151; }
     </style>
 </head>
-<body class="bg-gray-950 text-gray-200 font-sans min-h-screen">
+<body class="premium-dark text-gray-200 font-sans min-h-screen">
 
-<div id="custom-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 fancy-blur">
-    <div class="bg-gray-900 w-full max-w-sm rounded-3xl border border-gray-800 p-6 shadow-2xl modal-animate text-center">
-        <h3 id="modal-title" class="text-white font-bold">Notification</h3>
-        <p id="modal-message" class="text-xs text-gray-400 mt-2"></p>
-        <button onclick="closeModal()" class="mt-6 w-full bg-cyan-600 text-white py-3 rounded-xl text-xs font-bold">Acknowledge</button>
+<!-- Custom Modal -->
+<div id="modal-container" class="hidden fixed inset-0 z-[999] bg-black/90 flex items-center justify-center p-4">
+    <div class="bg-gray-900 w-full max-w-sm rounded-3xl p-6 border border-gray-700 text-center">
+        <h3 id="modal-title" class="text-white font-bold text-lg">Alert</h3>
+        <p id="modal-body" class="text-xs text-gray-400 mt-2"></p>
+        <button id="modal-btn" onclick="closeModal()" class="mt-6 w-full bg-cyan-600 py-3 rounded-xl text-white text-xs font-bold">Close</button>
     </div>
 </div>
 
-<div id="auth-ui" class="max-w-md mx-auto p-6 pt-20">
-    <h2 class="text-3xl font-black text-center text-cyan-400 mb-8">NT EARN HUB</h2>
-    <div class="bg-gray-900 p-6 rounded-3xl border border-gray-800 space-y-4">
+<!-- Authentication Section -->
+<div id="auth-section" class="max-w-md mx-auto p-6 pt-12">
+    <h2 class="text-3xl font-black text-center text-cyan-400 mb-8">NT GLOBAL HUB</h2>
+    <div class="glass-panel p-6 rounded-3xl space-y-4">
         <div id="signup-fields" class="hidden space-y-4">
-            <input type="text" id="fullname" placeholder="Full Name" class="w-full bg-gray-950 p-4 rounded-xl border border-gray-800 text-sm text-white">
-            <input type="text" id="username" placeholder="Username" class="w-full bg-gray-950 p-4 rounded-xl border border-gray-800 text-sm text-white">
+            <input type="text" id="fullname" placeholder="Full Name (ID Card)" class="w-full bg-black p-4 rounded-xl border border-gray-800 text-sm">
+            <input type="text" id="reg-username" placeholder="Unique Username" class="w-full bg-black p-4 rounded-xl border border-gray-800 text-sm">
         </div>
-        <input type="email" id="email" placeholder="Email Address" class="w-full bg-gray-950 p-4 rounded-xl border border-gray-800 text-sm text-white">
-        <input type="password" id="password" placeholder="Password" class="w-full bg-gray-950 p-4 rounded-xl border border-gray-800 text-sm text-white">
-        <button onclick="handleAuth()" id="auth-btn" class="w-full bg-cyan-600 py-3.5 rounded-xl font-bold text-white">Sign In</button>
-        <button onclick="toggleSignup()" class="w-full text-gray-500 text-xs font-bold underline">Switch to Sign Up / Sign In</button>
+        <input type="email" id="email" placeholder="Email Address" class="w-full bg-black p-4 rounded-xl border border-gray-800 text-sm">
+        <input type="password" id="password" placeholder="Password" class="w-full bg-black p-4 rounded-xl border border-gray-800 text-sm">
+        <button onclick="handleAuth()" id="auth-action-btn" class="w-full bg-cyan-600 py-3.5 rounded-xl font-bold">Sign In</button>
+        <div class="flex justify-between text-[10px] text-gray-500">
+            <button onclick="toggleMode()" id="mode-text">Don't have account? Register</button>
+            <button onclick="resetPassword()">Forgot Password?</button>
+        </div>
     </div>
 </div>
 
-<div id="app-ui" class="hidden max-w-md mx-auto min-h-screen bg-gray-950 p-6">
-    <header class="flex justify-between items-center mb-8">
-        <h1 class="text-lg font-black text-white">DASHBOARD</h1>
-        <button onclick="safelyLogOut()" class="text-red-400 text-xs"><i class="fa-solid fa-power-off"></i></button>
-    </header>
-
-    <div class="bg-gray-900 p-6 rounded-3xl border border-gray-800 mb-6">
-        <p class="text-xs text-gray-400">Total Balance</p>
-        <h3 class="text-3xl font-black text-cyan-400" id="balance-display">$0.00</h3>
-    </div>
-
-    <div id="task-list" class="space-y-4">
-        <div class="bg-gray-900 p-4 rounded-2xl border border-gray-800 flex justify-between items-center">
-            <div>
-                <h4 class="text-xs font-bold text-white">Premium Ad Node</h4>
-                <p class="text-[10px] text-gray-500">Reward: $0.15 | Time: 30s</p>
+<!-- Main App Section -->
+<div id="app-section" class="hidden max-w-md mx-auto h-screen flex flex-col">
+    <main class="flex-1 overflow-y-auto p-4 pb-24 space-y-6">
+        
+        <!-- DASHBOARD -->
+        <div id="view-dashboard" class="space-y-4">
+            <h2 class="text-lg font-black text-white">Welcome to NT EARN HUB</h2>
+            <div class="glass-panel p-6 rounded-3xl text-center">
+                <p class="text-[10px] text-gray-400 uppercase tracking-widest">Total Balance</p>
+                <h3 class="text-4xl font-black text-cyan-400 mt-2" id="bal-text">$0.00</h3>
             </div>
-            <button onclick="executeTask(0.15, 'https://google.com')" class="bg-cyan-600 px-4 py-2 rounded-xl text-xs font-bold text-white">Launch</button>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="launchTask('Watch Ads', 0.15)" class="bg-gray-900 p-4 rounded-2xl border border-gray-800 text-xs text-left">📺<br>Watch Ads</button>
+                <button onclick="launchTask('Short Videos', 0.10)" class="bg-gray-900 p-4 rounded-2xl border border-gray-800 text-xs text-left">🎬<br>Short Video</button>
+                <button onclick="launchTask('Micro Tasks', 0.20)" class="bg-gray-900 p-4 rounded-2xl border border-gray-800 text-xs text-left">📋<br>Micro Tasks</button>
+                <button onclick="switchTab('referrals')" class="bg-gray-900 p-4 rounded-2xl border border-gray-800 text-xs text-left">👥<br>Refer to Earn</button>
+            </div>
         </div>
-    </div>
+
+        <!-- WALLET -->
+        <div id="view-wallet" class="hidden space-y-4">
+            <h2 class="text-lg font-bold text-white">Wallet</h2>
+            <div class="glass-panel p-6 rounded-3xl space-y-4">
+                <select class="w-full bg-black p-3 rounded-xl border border-gray-800 text-sm text-gray-300">
+                    <option>BEP-20 (USDT)</option>
+                    <option>TRC-20 (USDT)</option>
+                </select>
+                <input type="text" placeholder="Wallet Address" class="w-full bg-black p-3 rounded-xl border border-gray-800 text-sm">
+                <button onclick="processWithdraw()" class="w-full bg-cyan-600 py-3 rounded-xl font-bold">Withdraw Now</button>
+                <p class="text-[10px] text-gray-500 italic">Limits: Min $30, Max $500/day. Process time: 2-5 days.</p>
+            </div>
+        </div>
+
+        <!-- REFERRALS -->
+        <div id="view-referrals" class="hidden space-y-4">
+            <h2 class="text-lg font-bold text-white">Team Rewards</h2>
+            <div class="glass-panel p-6 rounded-3xl text-center">
+                <p class="text-[10px] text-gray-400">Invite Link (10% Commission)</p>
+                <input type="text" value="https://ntglobalhub.com/ref/me" class="w-full bg-black text-center p-2 mt-2 rounded border border-gray-800 text-xs text-cyan-400">
+            </div>
+            <div id="downline-list" class="space-y-2"></div>
+        </div>
+
+        <!-- PROFILE -->
+        <div id="view-profile" class="hidden space-y-4 text-center">
+            <div class="w-20 h-20 bg-gray-800 rounded-full mx-auto mb-4 overflow-hidden">
+                <img src="https://via.placeholder.com/150" alt="Profile" id="prof-img">
+            </div>
+            <h3 id="prof-fullname" class="font-bold">Name</h3>
+            <p id="prof-username" class="text-xs text-gray-500">@username</p>
+            <button onclick="safelyLogOut()" class="text-red-400 text-xs underline">Log Out</button>
+        </div>
+
+        <!-- CONTACT -->
+        <div id="view-contact" class="hidden space-y-4">
+            <h2 class="text-lg font-bold text-white">Complain / Support</h2>
+            <input type="text" placeholder="Subject" class="w-full bg-black p-3 rounded-xl border border-gray-800 text-sm">
+            <textarea placeholder="Description" class="w-full bg-black p-3 rounded-xl border border-gray-800 text-sm h-24"></textarea>
+            <input type="file" accept="image/*" class="text-[10px] text-gray-500">
+            <button class="w-full bg-cyan-600 py-3 rounded-xl font-bold">Submit Complain</button>
+        </div>
+    </main>
+
+    <!-- Bottom Nav -->
+    <nav class="bg-gray-900 border-t border-gray-800 p-4 flex justify-between fixed bottom-0 w-full max-w-md">
+        <button onclick="switchTab('dashboard')"><i class="fa-solid fa-house"></i></button>
+        <button onclick="switchTab('wallet')"><i class="fa-solid fa-wallet"></i></button>
+        <button onclick="switchTab('referrals')"><i class="fa-solid fa-users"></i></button>
+        <button onclick="switchTab('profile')"><i class="fa-solid fa-user"></i></button>
+        <button onclick="switchTab('contact')"><i class="fa-solid fa-envelope"></i></button>
+    </nav>
 </div>
 
 <script>
+    // --- Firebase Config (User's Existing) ---
     const firebaseConfig = { apiKey: "AIzaSyDLEnhC545LNW9GyKfWaJPJCrOKUotYqpY", authDomain: "nt-earn-hub.firebaseapp.com", databaseURL: "https://nt-earn-hub-default-rtdb.firebaseio.com", projectId: "nt-earn-hub", storageBucket: "nt-earn-hub.firebasestorage.app", messagingSenderId: "606638253911", appId: "1:606638253911:web:77a1c0323c2e70afcc4012" };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
 
+    // --- Core Logic ---
     function handleAuth() {
+        const isSignup = !document.getElementById('signup-fields').classList.contains('hidden');
         const email = document.getElementById('email').value;
         const pass = document.getElementById('password').value;
-        const isSignup = !document.getElementById('signup-fields').classList.contains('hidden');
 
         if(isSignup) {
             auth.createUserWithEmailAndPassword(email, pass).then(cred => {
                 cred.user.sendEmailVerification();
-                db.ref('users/' + cred.user.uid).set({ fullname: document.getElementById('fullname').value, username: document.getElementById('username').value, balance: 0 });
-                showModal('Success', 'Verification email sent. Please check your inbox before logging in.');
-            }).catch(e => showModal('Error', e.message));
+                db.ref('users/' + cred.user.uid).set({ 
+                    fullname: document.getElementById('fullname').value, 
+                    username: document.getElementById('reg-username').value, 
+                    balance: 0 
+                });
+                alert('Verification email sent!');
+            }).catch(e => alert(e.message));
         } else {
             auth.signInWithEmailAndPassword(email, pass).then(cred => {
-                if(!cred.user.emailVerified) {
-                    showModal('Warning', 'Email not verified. Please verify your email first.');
-                    auth.signOut();
-                }
-            }).catch(e => showModal('Error', e.message));
+                if(!cred.user.emailVerified) alert('Please verify email first.');
+                else location.reload();
+            }).catch(e => alert(e.message));
         }
     }
 
-    function executeTask(reward, url) {
-        showModal('Wait', 'Task Initiated. Timer (30s) running...');
-        window.open(url, '_blank');
-        
-        setTimeout(() => {
-            const user = auth.currentUser;
-            if(user) {
-                db.ref('users/' + user.uid + '/balance').transaction(bal => (bal || 0) + reward);
-                showModal('Reward', 'Timer complete! $'+reward+' has been credited to your balance.');
-            }
-        }, 30000);
+    function resetPassword() {
+        const email = document.getElementById('email').value;
+        if(!email) { alert('Enter email first'); return; }
+        auth.sendPasswordResetEmail(email).then(() => alert('Reset link sent to your email.'));
     }
+
+    function launchTask(name, reward) {
+        let timer = 30;
+        showModal('Task: ' + name, 'Time remaining: 30s', false);
+        window.open('https://google.com', '_blank');
+        const interval = setInterval(() => {
+            timer--;
+            document.getElementById('modal-body').innerText = 'Time remaining: ' + timer + 's';
+            if(timer <= 0) {
+                clearInterval(interval);
+                db.ref('users/' + auth.currentUser.uid + '/balance').transaction(b => (b || 0) + reward);
+                showModal('Success', 'Reward $'+reward+' credited!', true);
+            }
+        }, 1000);
+    }
+
+    function processWithdraw() {
+        alert('Your withdrawal request is being reviewed. Expected time: 2-5 working days.');
+    }
+
+    // --- UI Helpers ---
+    function switchTab(tab) {
+        ['dashboard', 'wallet', 'referrals', 'profile', 'contact'].forEach(id => {
+            document.getElementById('view-' + id).classList.add(tab === id ? 'block' : 'hidden');
+        });
+    }
+
+    function showModal(t, b, closeable) {
+        document.getElementById('modal-title').innerText = t;
+        document.getElementById('modal-body').innerText = b;
+        document.getElementById('modal-container').classList.remove('hidden');
+    }
+    function closeModal() { document.getElementById('modal-container').classList.add('hidden'); }
+    function toggleMode() { document.getElementById('signup-fields').classList.toggle('hidden'); document.getElementById('mode-text').innerText = document.getElementById('signup-fields').classList.contains('hidden') ? "Don't have account? Register" : "Already have account? Sign In"; document.getElementById('auth-action-btn').innerText = document.getElementById('signup-fields').classList.contains('hidden') ? "Sign In" : "Register"; }
+    function safelyLogOut() { auth.signOut(); location.reload(); }
 
     auth.onAuthStateChanged(user => {
         if(user && user.emailVerified) {
-            document.getElementById('auth-ui').classList.add('hidden');
-            document.getElementById('app-ui').classList.remove('hidden');
-            db.ref('users/' + user.uid + '/balance').on('value', s => {
-                document.getElementById('balance-display').innerText = '$' + (s.val() || 0).toFixed(2);
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('app-section').classList.remove('hidden');
+            db.ref('users/' + user.uid).on('value', s => {
+                const data = s.val();
+                if(data) {
+                    document.getElementById('bal-text').innerText = '$' + (data.balance || 0).toFixed(2);
+                    document.getElementById('prof-fullname').innerText = data.fullname;
+                    document.getElementById('prof-username').innerText = '@' + data.username;
+                }
             });
         }
     });
-
-    function toggleSignup() { document.getElementById('signup-fields').classList.toggle('hidden'); document.getElementById('auth-btn').innerText = document.getElementById('signup-fields').classList.contains('hidden') ? 'Sign In' : 'Register Account'; }
-    function showModal(t, m) { document.getElementById('modal-title').innerText = t; document.getElementById('modal-message').innerText = m; document.getElementById('custom-modal').classList.remove('hidden'); }
-    function closeModal() { document.getElementById('custom-modal').classList.add('hidden'); }
-    function safelyLogOut() { auth.signOut(); window.location.reload(); }
 </script>
 </body>
 </html>
