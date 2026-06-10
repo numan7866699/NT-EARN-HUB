@@ -341,7 +341,6 @@
 
     </main>
 
-    <!-- Optimized Fixed Bottom Navigation Architecture -->
     <nav class="bg-gray-900 border-t border-gray-800 px-2 h-20 shrink-0 flex items-center justify-between sticky bottom-0 left-0 right-0 z-50 w-full shadow-[0_-10px_25px_-5px_rgba(0,0,0,0.7)]">
         <button onclick="switchView('dashboard')" class="flex flex-col items-center justify-center space-y-1.5 text-cyan-400 flex-1 h-full nav-btn" id="nav-dashboard">
             <i class="fa-solid fa-house text-xl"></i>
@@ -547,6 +546,7 @@
     
     function closeModal() { document.getElementById('custom-modal').classList.add('hidden'); }
 
+    // FIXED: Atomic Transaction System targeting explicit path nodes directly
     function executeTask(id, reward, url) {
         let timeLeft = 30;
         showModal('Task Tracking Active', `Time remaining: ${timeLeft}s. Keep the ad window open!`, '', false);
@@ -563,14 +563,14 @@
                 if(auth && auth.currentUser) {
                     const userUid = auth.currentUser.uid;
                     
-                    db.ref('users/' + userUid).once('value').then(snap => {
+                    // 1. Direct Target Transaction - Balances updates instantly without root state corruption
+                    db.ref('users/' + userUid + '/balance').transaction(currentBalance => {
+                        return (currentBalance || 0) + reward;
+                    }).then(() => {
+                        // 2. Safely read snapshot afterwards for the multi-tier affiliate loops
+                        return db.ref('users/' + userUid).once('value');
+                    }).then(snap => {
                         const userData = snap.val();
-                        
-                        db.ref('users/' + userUid).transaction(current => {
-                            if (current) current.balance = (current.balance || 0) + reward;
-                            return current;
-                        });
-
                         if(userData && userData.referredBy) {
                             const commission = reward * 0.10;
                             
@@ -578,23 +578,19 @@
                                 if(refSnap.exists()) {
                                     const referrerUid = Object.keys(refSnap.val())[0];
                                     
-                                    db.ref('users/' + referrerUid).transaction(refData => {
-                                        if(refData) {
-                                            refData.balance = (refData.balance || 0) + commission;
-                                            refData.refEarnings = (refData.refEarnings || 0) + commission;
-                                        }
-                                        return refData;
-                                    });
+                                    // Direct target paths for Referrer balances
+                                    db.ref('users/' + referrerUid + '/balance').transaction(curr => (curr || 0) + commission);
+                                    db.ref('users/' + referrerUid + '/refEarnings').transaction(curr => (curr || 0) + commission);
 
                                     db.ref('referrals/' + referrerUid).push({
-                                        fromUser: userData.fullname,
+                                        fromUser: userData.fullname || userData.username,
                                         commission: commission,
                                         date: new Date().toISOString().split('T')[0]
                                     });
                                 }
                             });
                         }
-                    });
+                    }).catch(err => console.error("Database transaction error: ", err));
                     
                     showModal('Verification Successful', `Task complete! $${reward.toFixed(2)} has been credited to your balance.`, '', true);
                 }
