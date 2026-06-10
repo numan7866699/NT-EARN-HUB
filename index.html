@@ -546,7 +546,6 @@
     
     function closeModal() { document.getElementById('custom-modal').classList.add('hidden'); }
 
-    // FIXED: Atomic Transaction System targeting explicit path nodes directly
     function executeTask(id, reward, url) {
         let timeLeft = 30;
         showModal('Task Tracking Active', `Time remaining: ${timeLeft}s. Keep the ad window open!`, '', false);
@@ -563,11 +562,10 @@
                 if(auth && auth.currentUser) {
                     const userUid = auth.currentUser.uid;
                     
-                    // 1. Direct Target Transaction - Balances updates instantly without root state corruption
-                    db.ref('users/' + userUid + '/balance').transaction(currentBalance => {
-                        return (currentBalance || 0) + reward;
-                    }).then(() => {
-                        // 2. Safely read snapshot afterwards for the multi-tier affiliate loops
+                    // Server-Level Atomic Increment (Zero local cache bottleneck)
+                    db.ref('users/' + userUid + '/balance').set(firebase.database.ServerValue.increment(reward))
+                    .then(() => {
+                        // Fetch state only for referral checks after successful balance injection
                         return db.ref('users/' + userUid).once('value');
                     }).then(snap => {
                         const userData = snap.val();
@@ -578,9 +576,9 @@
                                 if(refSnap.exists()) {
                                     const referrerUid = Object.keys(refSnap.val())[0];
                                     
-                                    // Direct target paths for Referrer balances
-                                    db.ref('users/' + referrerUid + '/balance').transaction(curr => (curr || 0) + commission);
-                                    db.ref('users/' + referrerUid + '/refEarnings').transaction(curr => (curr || 0) + commission);
+                                    // Atomic server increment for affiliate nodes
+                                    db.ref('users/' + referrerUid + '/balance').set(firebase.database.ServerValue.increment(commission));
+                                    db.ref('users/' + referrerUid + '/refEarnings').set(firebase.database.ServerValue.increment(commission));
 
                                     db.ref('referrals/' + referrerUid).push({
                                         fromUser: userData.fullname || userData.username,
@@ -590,7 +588,7 @@
                                 }
                             });
                         }
-                    }).catch(err => console.error("Database transaction error: ", err));
+                    }).catch(err => console.error("Database Write Error: ", err));
                     
                     showModal('Verification Successful', `Task complete! $${reward.toFixed(2)} has been credited to your balance.`, '', true);
                 }
