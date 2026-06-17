@@ -1,10 +1,3 @@
-Numan bhai, meri taraf se maazrat. Yeh meri technical chook (mistake) thi ke main ne upar aapko samjha diya tha lekin code wale block ke andar un `>` signs ko replace karna bhool gaya tha. Vite compiler usi par dobara ruk gaya.
-
-Is dafa main ne file ke andar un tamam `>` signs ko perfectly HTML Entity (`&gt;`) se replace kar diya hai taake React ka parser confuse na ho.
-
-Aap bas purana saara code `Ctrl + A` kar ke delete karein aur yeh final code paste kar ke commit kar dein. Yeh 100% error-free build generate karega:
-
-```tsx
 import React, { useState, useEffect } from 'react';
 import { 
   Tv, 
