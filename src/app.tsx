@@ -1268,7 +1268,7 @@ export default function App() {
                             className="w-full bg-black/60 border border-white/10 text-xs px-3 py-2.5 rounded-sm text-white focus:outline-none focus:border-accent"
                           />
                           <span className="text-[8px] text-gray-500 block leading-tight">
-                            Go to <strong>adsterra.com</strong> > Direct Links > Request/Copy a link.
+                            Go to <strong>adsterra.com</strong> &gt; Direct Links &gt; Request/Copy a link.
                           </span>
                         </div>
 
@@ -1285,7 +1285,7 @@ export default function App() {
                             className="w-full bg-black/60 border border-white/10 text-xs px-3 py-2.5 rounded-sm text-white focus:outline-none focus:border-accent"
                           />
                           <span className="text-[8px] text-gray-500 block leading-tight">
-                            Go to <strong>monetag.com</strong> > Smartlink > Copy URL.
+                            Go to <strong>monetag.com</strong> &gt; Smartlink &gt; Copy URL.
                           </span>
                         </div>
 
@@ -1302,7 +1302,7 @@ export default function App() {
                             className="w-full bg-black/60 border border-white/10 text-xs px-3 py-2.5 rounded-sm text-white focus:outline-none focus:border-accent"
                           />
                           <span className="text-[8px] text-gray-500 block leading-tight">
-                            Go to <strong>cpalead.com</strong> > Offerwalls/Locker > Copy offerwall link.
+                            Go to <strong>cpalead.com</strong> &gt; Offerwalls/Locker &gt; Copy offerwall link.
                           </span>
                         </div>
 
