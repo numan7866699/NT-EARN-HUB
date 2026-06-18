@@ -1396,9 +1396,7 @@ export default function App() {
                             onChange={(e) => setAdminMonetagLink(e.target.value)}
                             className="w-full bg-black/60 border border-white/10 text-xs px-3 py-2.5 rounded-sm text-white focus:outline-none focus:border-accent"
                           />
-                          <span className="text-[8px] text-gray-500 block leading-tight">
-                            Go to <strong>monetag.com</strong> &gt; Smartlink &gt; Copy URL.
-                          </span>
+                          
                         </div>
 
                         {/* CPALead Link */}
