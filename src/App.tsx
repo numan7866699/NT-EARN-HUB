@@ -1411,9 +1411,7 @@ export default function App() {
                             onChange={(e) => setAdminCpaLeadLink(e.target.value)}
                             className="w-full bg-black/60 border border-white/10 text-xs px-3 py-2.5 rounded-sm text-white focus:outline-none focus:border-accent"
                           />
-                          <span className="text-[8px] text-gray-500 block leading-tight">
-                            Go to <strong>cpalead.com</strong> &gt; Offerwalls/Locker &gt; Copy offerwall link.
-                          </span>
+                          
                         </div>
 
                         {/* Premium Short Video Portal Link */}
