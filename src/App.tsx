@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Tv, 
   Play, 
@@ -9,14 +9,8 @@ import {
   User, 
   LogOut, 
   ArrowLeft, 
-  DollarSign, 
-  TrendingUp, 
   ShieldCheck, 
   Copy, 
-  Send, 
-  Image, 
-  Camera, 
-  Key, 
   Headphones, 
   Trash2, 
   Info, 
@@ -27,11 +21,10 @@ import {
   Sparkles,
   AlertTriangle,
   RotateCw,
-  CheckCircle2,
-  FileText
+  CheckCircle2
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import { dbService, getSavedMode } from './dbService';
+import { dbService } from './dbService';
 import { UserProfile, Task, Transaction, ReferralRecord, MonetizationSettings } from './types';
 
 export default function App() {
@@ -103,8 +96,6 @@ export default function App() {
   const [adminMicroTasksLink, setAdminMicroTasksLink] = useState<string>('');
 
   // Profile update form states
-  const [newPasswordUpdate, setNewPasswordUpdate] = useState<string>('');
-  const [confirmPasswordUpdate, setConfirmPasswordUpdate] = useState<string>('');
   const [customPicUrl, setCustomPicUrl] = useState<string>('');
   const [updatingPass, setUpdatingPass] = useState<boolean>(false);
 
@@ -1647,4 +1638,3 @@ export default function App() {
     </div>
   );
 }
-
