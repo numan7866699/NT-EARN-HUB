@@ -588,7 +588,7 @@ export default function App() {
     <div className="bg-[#0A0A0A] text-[#F5F5F5] font-sans min-h-screen flex flex-col justify-between selection:bg-accent selection:text-black">
       
       {/* Dynamic Upper Header Concept / Testing Phase Mode Selector */}
-      <div className="bg-[#111111] border-b border-white/10 px-4 py-2.5 flex items-center justify-between z-[60] text-xs font-medium">
+      <div className="hidden bg-[#111111] border-b border-white/10 px-4 py-2.5 flex items-center justify-between z-[60] text-xs font-medium">
         <div className="flex items-center space-x-2 text-gray-300">
           <Database className="w-4 h-4 text-accent" />
           <span className="font-sans text-[10px] uppercase tracking-[0.25em] text-[#F5F5F5]/60">Testing Environment</span>
