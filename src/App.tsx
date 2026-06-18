@@ -36,7 +36,7 @@ import { UserProfile, Task, Transaction, ReferralRecord, MonetizationSettings } 
 
 export default function App() {
   // Global Mode selection: Sandbox Mode vs. Live Firebase
-  const [isSandbox, setIsSandbox] = useState<boolean>(getSavedMode());
+  const [isSandbox, setIsSandbox] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
   const [isLoadingAuth, setIsLoadingAuth] = useState<boolean>(true);
 
