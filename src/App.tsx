@@ -131,13 +131,21 @@ export default function App() {
     } else {
       // Live Firebase mode auth state listener
       let unsubProfile: (() => void) | null = null;
-      const unsubAuth = dbService.onAuthStateChanged((user) => {
+      const unsubAuth = dbService.onAuthStateChanged(async (user) => {
         if (unsubProfile) {
           unsubProfile();
           unsubProfile = null;
         }
 
         if (user) {
+          // SECURITY FIX: Strictly block unverified emails from workspace access
+          if (!isSandbox && user.emailVerified === false) {
+            await dbService.signOut();
+            setCurrentUser(null);
+            setIsLoadingAuth(false);
+            return; // Terminate login process
+          }
+
           // Setup listener for their user document
           unsubProfile = dbService.subscribeToProfile(user.uid, (profile) => {
             setCurrentUser(profile);
