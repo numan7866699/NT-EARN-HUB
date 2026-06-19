@@ -131,27 +131,29 @@ export default function App() {
     } else {
       // Live Firebase mode auth state listener
       let unsubProfile: (() => void) | null = null;
-      const unsubAuth = dbService.onAuthStateChanged(async (user) => {
+      const unsubAuth = dbService.onAuthStateChanged((user) => {
         if (unsubProfile) {
           unsubProfile();
           unsubProfile = null;
         }
 
         if (user) {
-          // SECURITY FIX: Strictly block unverified emails from workspace access
+          // SMART SECURITY FIX: Block dashboard access without aggressive signout
+          // Is se Database araam se apna data write kar lega bina Permission Denied ke
           if (!isSandbox && user.emailVerified === false) {
-            await dbService.signOut();
             setCurrentUser(null);
             setIsLoadingAuth(false);
-            return; // Terminate login process
+            return; 
           }
 
           // Setup listener for their user document
           unsubProfile = dbService.subscribeToProfile(user.uid, (profile) => {
-            setCurrentUser(profile);
             if (profile) {
-              // Setup referrals & transactions listeners
+              setCurrentUser(profile);
               setupLiveFeeds(profile.uid);
+            } else {
+              // Agar koi corrupt account login karne ki koshish kare toh
+              setCurrentUser(null);
             }
           });
           setIsLoadingAuth(false);
