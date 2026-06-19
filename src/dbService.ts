@@ -9,7 +9,7 @@ import {
   query, 
   orderByChild, 
   equalTo,
-  increment // <-- ADDED ATOMIC INCREMENT IMPORT
+  increment 
 } from 'firebase/database';
 import { 
   createUserWithEmailAndPassword, 
@@ -51,7 +51,8 @@ const DEFAULT_USER_PROFILE: UserProfile = {
   balance: 10.50,
   pending: 0.0,
   refEarnings: 1.50,
-  referredBy: 'admin_invite'
+  referredBy: 'admin_invite',
+  completedTasks: {}
 };
 
 const DEFAULT_SANDBOX_REFERRALS: ReferralRecord[] = [
@@ -68,7 +69,6 @@ const DEFAULT_SANDBOX_TRANSACTIONS: Transaction[] = [
 // Helper to determine if we are in Sandbox Mode
 export const getSavedMode = (): boolean => {
   const mode = localStorage.getItem('nt_earnhub_mode');
-  // Default to Live Mode if it exists, otherwise Default to Sandbox for stable instant testing
   return mode === 'sandbox' || !mode;
 };
 
@@ -105,7 +105,8 @@ class DBService {
         balance: 0.0,
         pending: 0.0,
         refEarnings: 0.0,
-        referredBy: referredBy || ''
+        referredBy: referredBy || '',
+        completedTasks: {}
       };
       
       localStorage.setItem(LOCAL_STORAGE_KEY_USER, JSON.stringify(profile));
@@ -113,10 +114,8 @@ class DBService {
       localStorage.setItem(LOCAL_STORAGE_KEY_REFERRALS, JSON.stringify([]));
       return profile;
     } else {
-      // Direct Live Firebase Auth
       const cred = await createUserWithEmailAndPassword(authInstance, email, password);
       
-      // Email verification is completely optional. We dispatch in background without blocking
       try {
         await sendEmailVerification(cred.user);
       } catch (err) {
@@ -132,10 +131,10 @@ class DBService {
         balance: 0.0,
         pending: 0.0,
         refEarnings: 0.0,
-        referredBy: referredBy || ''
+        referredBy: referredBy || '',
+        completedTasks: {}
       };
 
-      // Set user record under users/{uid}
       await set(ref(dbInstance, `users/${cred.user.uid}`), {
         fullname,
         username: username.toLowerCase().trim(),
@@ -159,7 +158,6 @@ class DBService {
           return u;
         }
       }
-      // Create on the fly to bypass roadblock
       const profile: UserProfile = {
         ...DEFAULT_USER_PROFILE,
         uid: 'sandbox_' + Math.random().toString(36).substring(2, 9),
@@ -184,8 +182,6 @@ class DBService {
 
   async signOut(): Promise<void> {
     if (this.isSandboxMode) {
-      // Just clear active local session tags or profile pointers from storage if desired
-      // But typically we stay "logged out" by state tracking in App
       return;
     } else {
       await signOut(authInstance);
@@ -214,7 +210,6 @@ class DBService {
     }
   }
 
-  // Snapshot Listeners for Profile, Referrals, and Ledger
   subscribeToProfile(uid: string, callback: (profile: UserProfile | null) => void): () => void {
     if (this.isSandboxMode) {
       const load = () => {
@@ -229,8 +224,7 @@ class DBService {
       
       load();
       window.addEventListener('storage', load);
-
-      const intervalId = setInterval(load, 1500); // Poll for fast interactive visual updates!
+      const intervalId = setInterval(load, 1500);
 
       return () => {
         window.removeEventListener('storage', load);
@@ -251,7 +245,8 @@ class DBService {
             pending: Number(val.pending || 0),
             refEarnings: Number(val.refEarnings || 0),
             referredBy: val.referredBy || '',
-            profilePicUrl: val.profilePicUrl
+            profilePicUrl: val.profilePicUrl,
+            completedTasks: val.completedTasks || {} // ATOMIC FIX: Pull strict server timestamps
           });
         } else {
           callback(null);
@@ -292,7 +287,7 @@ class DBService {
             });
           });
         }
-        callback(list.reverse()); // latest first
+        callback(list.reverse());
       });
       return unsub;
     }
@@ -335,17 +330,19 @@ class DBService {
     }
   }
 
-  // 🚀 FIXED: Atomic Task Completion Earning transaction & Referral loop 
   async completeTask(uid: string, taskId: string, taskTitle: string, reward: number): Promise<void> {
+    const timestampNow = Date.now(); // SECURITY LOCK: Exact atomic time generated
+
     if (this.isSandboxMode) {
-      // 1. Fetch live profile object
       const stored = localStorage.getItem(LOCAL_STORAGE_KEY_USER);
       if (stored) {
         const profile = JSON.parse(stored) as UserProfile;
         profile.balance = Number((profile.balance + reward).toFixed(2));
+        if (!profile.completedTasks) profile.completedTasks = {};
+        profile.completedTasks[taskId] = timestampNow; // Save lock time locally
+        
         localStorage.setItem(LOCAL_STORAGE_KEY_USER, JSON.stringify(profile));
 
-        // 2. Add ledger entry
         const txsStored = localStorage.getItem(LOCAL_STORAGE_KEY_TRANSACTIONS);
         const txs = txsStored ? (JSON.parse(txsStored) as Transaction[]) : [];
         const newTx: Transaction = {
@@ -359,10 +356,8 @@ class DBService {
         txs.push(newTx);
         localStorage.setItem(LOCAL_STORAGE_KEY_TRANSACTIONS, JSON.stringify(txs));
 
-        // 3. Referral Commission Trigger (10%)
         if (profile.referredBy) {
           const commission = Number((reward * 0.10).toFixed(4));
-          // Check if referral records exist
           const refsStored = localStorage.getItem(LOCAL_STORAGE_KEY_REFERRALS);
           const refs = refsStored ? (JSON.parse(refsStored) as ReferralRecord[]) : [];
           refs.push({
@@ -373,19 +368,17 @@ class DBService {
           });
           localStorage.setItem(LOCAL_STORAGE_KEY_REFERRALS, JSON.stringify(refs));
 
-          // In sandbox mode, let's bump our local ref earnings counter just to show complete simulation loops!
           profile.refEarnings = Number((profile.refEarnings + commission).toFixed(4));
           localStorage.setItem(LOCAL_STORAGE_KEY_USER, JSON.stringify(profile));
         }
       }
     } else {
-      // LIVE DATABASE ATOMIC OPERATION - THIS FIXES THE MAIN USER ISSUE
       const userBalancePath = ref(dbInstance, `users/${uid}/balance`);
-      
-      // 1. ATOMIC FIX: Increment Available Balance directly on Server bypassing local cache
       await set(userBalancePath, increment(reward));
 
-      // 2. Log Transaction item in historical ledger node path
+      // ATOMIC FIX: Save the strict 24-hour lock timestamp securely into Database
+      await set(ref(dbInstance, `users/${uid}/completedTasks/${taskId}`), timestampNow);
+
       const userTxPushRef = push(ref(dbInstance, `transactions/${uid}`));
       await set(userTxPushRef, {
         type: 'Task Reward',
@@ -395,7 +388,6 @@ class DBService {
         date: new Date().toISOString().split('T')[0]
       });
 
-      // 3. Referral chain verification lookup
       const userProfileSnap = await get(ref(dbInstance, `users/${uid}`));
       const userData = userProfileSnap.val();
       
@@ -403,7 +395,6 @@ class DBService {
         const commission = Number((reward * 0.10).toFixed(4));
         const referrerUsername = String(userData.referredBy).toLowerCase().trim();
 
-        // Query the database to find the referrer's UID using their username index
         const usersRef = ref(dbInstance, 'users');
         const referrerQuery = query(usersRef, orderByChild('username'), equalTo(referrerUsername));
         const referrerSnap = await get(referrerQuery);
@@ -411,11 +402,9 @@ class DBService {
         if (referrerSnap.exists()) {
           const referrerUid = Object.keys(referrerSnap.val())[0];
           
-          // ATOMIC FIX: Server-side increment for affiliate nodes
           await set(ref(dbInstance, `users/${referrerUid}/balance`), increment(commission));
           await set(ref(dbInstance, `users/${referrerUid}/refEarnings`), increment(commission));
 
-          // Push the commission item detailing who the credit came from
           const refDetailPushRef = push(ref(dbInstance, `referrals/${referrerUid}`));
           await set(refDetailPushRef, {
             fromUser: userData.fullname || userData.username || 'Ecosystem Node',
@@ -427,7 +416,6 @@ class DBService {
     }
   }
 
-  // Withdrawal operations
   async withdrawFunds(uid: string, amount: number, network: string, walletAddress: string): Promise<void> {
     if (this.isSandboxMode) {
       const stored = localStorage.getItem(LOCAL_STORAGE_KEY_USER);
@@ -453,8 +441,6 @@ class DBService {
         localStorage.setItem(LOCAL_STORAGE_KEY_TRANSACTIONS, JSON.stringify(txs));
       }
     } else {
-      // LIVE DATABASE SUBMISSION
-      // Subtract from balance, add to pending
       const userRef = ref(dbInstance, `users/${uid}`);
       await runTransaction(userRef, (current) => {
         if (current) {
@@ -463,14 +449,12 @@ class DBService {
             current.balance = Number((currentBal - amount).toFixed(2));
             current.pending = Number(((current.pending || 0) + amount).toFixed(2));
           } else {
-            // Throw to abort transaction
             return undefined; 
           }
         }
         return current;
       });
 
-      // Push history line
       const userTxPushRef = push(ref(dbInstance, `transactions/${uid}`));
       await set(userTxPushRef, {
         type: 'Withdrawal Request',
@@ -482,7 +466,6 @@ class DBService {
     }
   }
 
-  // Profile operations
   async updatePicUrl(uid: string, url: string): Promise<void> {
     if (this.isSandboxMode) {
       const stored = localStorage.getItem(LOCAL_STORAGE_KEY_USER);
@@ -498,7 +481,6 @@ class DBService {
 
   async updateAccountPassword(password: string): Promise<void> {
     if (this.isSandboxMode) {
-      // Sandbox simulated password change, no changes required but complete success
       return;
     } else {
       const user = authInstance.currentUser;
@@ -510,7 +492,6 @@ class DBService {
     }
   }
 
-  // Support Ticketing
   async fileTicket(uid: string, username: string, name: string, email: string, subject: string, description: string, attachmentUrl?: string): Promise<void> {
     if (this.isSandboxMode) {
       const ticketsStored = localStorage.getItem(LOCAL_STORAGE_KEY_TICKETS);
@@ -529,7 +510,6 @@ class DBService {
       });
       localStorage.setItem(LOCAL_STORAGE_KEY_TICKETS, JSON.stringify(tickets));
     } else {
-      // In Live database we save to global support_tickets path
       const ticketPushRef = push(ref(dbInstance, 'support_tickets'));
       const ticketId = ticketPushRef.key;
       await set(ticketPushRef, {
@@ -547,7 +527,6 @@ class DBService {
     }
   }
 
-  // Monetization Control Panel Settings
   async getMonetizationSettings(): Promise<MonetizationSettings> {
     if (this.isSandboxMode) {
       const stored = localStorage.getItem(LOCAL_STORAGE_KEY_MONETIZATION);
@@ -579,10 +558,8 @@ class DBService {
     }
   }
 
-  // Watch callback register
   onAuthStateChanged(callback: (user: FirebaseUser | null) => void): () => void {
     if (this.isSandboxMode) {
-      // Sandbox mode will monitor on demand, return unsubscribe
       return () => {};
     } else {
       return onAuthStateChanged(authInstance, callback);
