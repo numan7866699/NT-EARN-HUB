@@ -9,6 +9,7 @@ export interface UserProfile {
   refEarnings: number;
   referredBy: string;
   profilePicUrl?: string;
+  completedTasks?: Record<string, number>; // NEW: Server timestamp tracking for 24-hour lock
 }
 
 export interface Task {
