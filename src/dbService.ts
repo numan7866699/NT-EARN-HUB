@@ -175,6 +175,15 @@ class DBService {
       return profile;
     } else {
       const cred = await signInWithEmailAndPassword(authInstance, email, password);
+      
+      // 🚀 FIX: Zabardasti token refresh karein taake latest "Email Verified" status foran mil jaye
+      await cred.user.reload(); 
+      
+      if (!cred.user.emailVerified) {
+        await signOut(authInstance); // Flush the phantom session
+        throw new Error('EMAIL_UNVERIFIED');
+      }
+
       const snap = await get(ref(dbInstance, `users/${cred.user.uid}`));
       return { uid: cred.user.uid, ...snap.val() };
     }
