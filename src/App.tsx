@@ -564,8 +564,7 @@ export default function App() {
   const totalUniqueReferrals = uniqueUsersSet.size;
   // ----------------------------------
   return (
-        <div className="bg-[#0A0A0A] text-[#F5F5F5] font-sans h-[100dvh] w-full flex flex-col justify-between selection:bg-accent selection:text-black overflow-hidden">
-      
+     <div className="bg-gradient-to-br from-slate-900 via-indigo-950/40 to-[#0A0A0A] text-[#F5F5F5] font-sans h-[100dvh] w-full flex flex-col justify-between selection:bg-accent selection:text-black overflow-hidden">      
       {/* Top Test Sandbox Mode Toggle Header */}
       <div className="hidden bg-[#111111] border-b border-white/10 px-4 py-2.5 flex items-center justify-between z-[60] text-xs font-medium">
         <div className="flex items-center space-x-2 text-gray-300">
