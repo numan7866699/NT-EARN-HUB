@@ -463,8 +463,8 @@ export default function App() {
   const handleCompleteActiveTask = async (task: Task) => {
     if (!currentUser) return;
     try {
-      await dbService.completeTask(currentUser.uid, task.id, task.title, task.reward);
-      triggerModal('success', 'Reward Credited!', `Verification protocols cleared. $${task.reward.toFixed(2)} added instantly to your wallet. Task safely locked for 24 hours.`);
+   await dbService.completeTask(currentUser.uid, task.id, task.title, task.reward);
+      triggerModal('success', 'Reward Credited!', `Verification protocols cleared. $${task.reward.toFixed(4)} added instantly to your wallet. Task safely locked for 24 hours.`);
       
       // Auto-update UI Sync Time to reflect the exact lock instantly without waiting 60 seconds
       setCurrentSyncTime(Date.now());
