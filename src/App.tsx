@@ -400,24 +400,24 @@ export default function App() {
     const defaultVid = shortVid || 'https://www.youtube.com/shorts/3pxjN3_qBv4';
     const defaultTask = cpaLead || microTasks || 'https://www.google.com/search?q=microtasks+earn+money+at+home';
 
-    let list: Task[] = [];
+        let list: Task[] = [];
     if (cat === 'Watch Ads') {
       list = [
-        { id: 'tk_ad_1', title: adsterra ? 'Adsterra Smart CPM Redirect' : 'Premium Traffic Verification Link', reward: 0.15, destination: adsterra || 'https://www.adsterra.com', category: 'Watch Ads' },
-        { id: 'tk_ad_2', title: monetag ? 'Monetag Live Monetized Ad' : 'Network Scalp Node Loop', reward: 0.10, destination: monetag || 'https://www.monetag.com', category: 'Watch Ads' },
-        { id: 'tk_ad_3', title: 'Premium High-Yield Global Ad', reward: 0.22, destination: defaultAd, category: 'Watch Ads' }
+        { id: 'tk_ad_1', title: adsterra ? 'Adsterra Smart CPM Redirect' : 'Premium Traffic Verification Link', reward: 0.003, destination: adsterra || 'https://www.adsterra.com', category: 'Watch Ads' },
+        { id: 'tk_ad_2', title: monetag ? 'Monetag Live Monetized Ad' : 'Network Scalp Node Loop', reward: 0.002, destination: monetag || 'https://www.monetag.com', category: 'Watch Ads' },
+        { id: 'tk_ad_3', title: 'Premium High-Yield Global Ad', reward: 0.005, destination: defaultAd, category: 'Watch Ads' }
       ];
     } else if (cat === 'Short Videos') {
       list = [
-        { id: 'tk_vid_1', title: shortVid ? 'Monetized Video Portal V1' : 'Short Curated Media Node V1', reward: 0.18, destination: shortVid || 'https://www.youtube.com/shorts/3pxjN3_qBv4', category: 'Short Videos' },
-        { id: 'tk_vid_2', title: 'Global Stream Validation Feed', reward: 0.12, destination: defaultVid, category: 'Short Videos' },
-        { id: 'tk_vid_3', title: 'DeFi Wallet Verification Log', reward: 0.25, destination: defaultVid, category: 'Short Videos' }
+        { id: 'tk_vid_1', title: shortVid ? 'Monetized Video Portal V1' : 'Short Curated Media Node V1', reward: 0.004, destination: shortVid || 'https://www.youtube.com/shorts/3pxjN3_qBv4', category: 'Short Videos' },
+        { id: 'tk_vid_2', title: 'Global Stream Validation Feed', reward: 0.006, destination: defaultVid, category: 'Short Videos' },
+        { id: 'tk_vid_3', title: 'DeFi Wallet Verification Log', reward: 0.008, destination: defaultVid, category: 'Short Videos' }
       ];
     } else {
       list = [
-        { id: 'tk_mt_1', title: cpaLead ? 'CPALead Live Offerwall tasks' : 'Submit Telegram Node Engagement', reward: 0.35, destination: cpaLead || 'https://www.cpalead.com', category: 'Micro Tasks' },
-        { id: 'tk_mt_2', title: microTasks ? 'CPA Content Locker Rewards' : 'Global Identity App Validation Beta', reward: 0.50, destination: microTasks || 'https://www.cpalead.com', category: 'Micro Tasks' },
-        { id: 'tk_mt_3', title: 'USDT Smart Contract Auditing Alpha', reward: 0.80, destination: defaultTask, category: 'Micro Tasks' }
+        { id: 'tk_mt_1', title: cpaLead ? 'CPALead Live Offerwall tasks' : 'Submit Telegram Node Engagement', reward: 0.05, destination: cpaLead || 'https://www.cpalead.com', category: 'Micro Tasks' },
+        { id: 'tk_mt_2', title: microTasks ? 'CPA Content Locker Rewards' : 'Global Identity App Validation Beta', reward: 0.08, destination: microTasks || 'https://www.cpalead.com', category: 'Micro Tasks' },
+        { id: 'tk_mt_3', title: 'USDT Smart Contract Auditing Alpha', reward: 0.12, destination: defaultTask, category: 'Micro Tasks' }
       ];
     }
     setTasksList(list);
