@@ -566,7 +566,7 @@ export default function App() {
   return (
      <div className="bg-gradient-to-br from-slate-900 via-indigo-950/40 to-[#0A0A0A] text-[#F5F5F5] font-sans h-[100dvh] w-full flex flex-col justify-between selection:bg-accent selection:text-black overflow-hidden">      
       {/* Top Test Sandbox Mode Toggle Header */}
-      <div className="hidden bg-[#111111] border-b border-white/10 px-4 py-2.5 flex items-center justify-between z-[60] text-xs font-medium">
+      <div className="hidden bg-slate-800/90 backdrop-blur-sm border-b border-white/10 px-4 py-2.5 flex items-center justify-between z-[60] text-xs font-medium">
         <div className="flex items-center space-x-2 text-gray-300">
           <Database className="w-4 h-4 text-accent" />
           <span className="font-sans text-[10px] uppercase tracking-[0.25em] text-[#F5F5F5]/60">Testing Environment</span>
@@ -1225,24 +1225,24 @@ export default function App() {
             )}
           </main>
 
-          <nav className="bg-[#111111] border-t border-white/10 px-2 h-20 shrink-0 flex items-center justify-between sticky bottom-0 left-0 right-0 z-50 w-full shadow-[0_-10px_25px_-5px_rgba(0,0,0,0.9)]">
-            <button onClick={() => setActiveView('dashboard')} className={`flex flex-col items-center justify-center space-y-1 flex-1 h-full transition duration-150 ${activeView === 'dashboard' || activeView === 'tasks' ? 'text-accent font-bold font-sans' : 'text-gray-500 hover:text-gray-300'}`}>
+          <nav className="bg-slate-900/95 backdrop-blur-md border-t border-white/10 px-2 h-20 shrink-0 flex items-center justify-between sticky bottom-0 left-0 right-0 z-50 w-full shadow-[0_-10px_25px_-5px_rgba(0,0,0,0.9)]">
+            <button onClick={() => setActiveView('dashboard')} className={`flex flex-col items-center justify-center space-y-1 flex-1 h-full transition duration-150 ${activeView === 'dashboard' || activeView === 'tasks' ? 'text-sky-400 font-bold font-sans scale-110' : 'text-gray-500 hover:text-sky-400'}`}>
               <Tv className="w-5 h-5" />
               <span className="tracking-widest uppercase font-bold text-[8px]">Home</span>
             </button>
-            <button onClick={() => setActiveView('wallet')} className={`flex flex-col items-center justify-center space-y-1 flex-1 h-full transition duration-150 ${activeView === 'wallet' ? 'text-accent font-bold' : 'text-gray-500 hover:text-gray-300'}`}>
+            <button onClick={() => setActiveView('wallet')} className={`flex flex-col items-center justify-center space-y-1 flex-1 h-full transition duration-150 ${activeView === 'wallet' ? 'text-amber-400 font-bold scale-110' : 'text-gray-500 hover:text-amber-400'}`}>
               <Wallet className="w-5 h-5" />
               <span className="tracking-widest uppercase font-bold text-[8px]">Wallet</span>
             </button>
-            <button onClick={() => setActiveView('referrals')} className={`flex flex-col items-center justify-center space-y-1 flex-1 h-full transition duration-150 ${activeView === 'referrals' ? 'text-accent font-bold' : 'text-gray-500 hover:text-gray-300'}`}>
+            <button onClick={() => setActiveView('referrals')} className={`flex flex-col items-center justify-center space-y-1 flex-1 h-full transition duration-150 ${activeView === 'referrals' ? 'text-fuchsia-400 font-bold scale-110' : 'text-gray-500 hover:text-fuchsia-400'}`}>
               <Users className="w-5 h-5" />
               <span className="tracking-widest uppercase font-bold text-[8px]">Invite</span>
             </button>
-            <button onClick={() => setActiveView('history')} className={`flex flex-col items-center justify-center space-y-1 flex-1 h-full transition duration-150 ${activeView === 'history' ? 'text-accent font-bold' : 'text-gray-500 hover:text-gray-300'}`}>
+            <button onClick={() => setActiveView('history')} className={`flex flex-col items-center justify-center space-y-1 flex-1 h-full transition duration-150 ${activeView === 'history' ? 'text-emerald-400 font-bold scale-110' : 'text-gray-500 hover:text-emerald-400'}`}>
               <Clock className="w-5 h-5" />
               <span className="tracking-widest uppercase font-bold text-[8px]">Ledger</span>
             </button>
-            <button onClick={() => setActiveView('profile')} className={`flex flex-col items-center justify-center space-y-1 flex-1 h-full transition duration-150 ${activeView === 'profile' || activeView === 'support' ? 'text-accent font-bold' : 'text-gray-500 hover:text-gray-300'}`}>
+            <button onClick={() => setActiveView('profile')} className={`flex flex-col items-center justify-center space-y-1 flex-1 h-full transition duration-150 ${activeView === 'profile' || activeView === 'support' ? 'text-violet-400 font-bold scale-110' : 'text-gray-500 hover:text-violet-400'}`}>
               <User className="w-5 h-5" />
               <span className="tracking-widest uppercase font-bold text-[8px]">Profile</span>
             </button>
