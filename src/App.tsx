@@ -908,7 +908,7 @@ export default function App() {
                         <div className="space-y-1 pr-4 mb-3 sm:mb-0 opacity-100">
                           <span className="text-[9px] text-accent uppercase tracking-widest block font-bold">TASK INTEGRATION</span>
                           <h4 className={`text-base font-sans leading-snug ${isTaskLocked ? 'text-gray-500 line-through' : 'text-[#F5F5F5]'}`}>{t.title}</h4>
-                          <span className="text-[10px] text-[#F5F5F5]/40 block font-mono">Process reward: <span className="text-accent font-bold">${t.reward.toFixed(2)}</span></span>
+                          <span className="text-[10px] text-[#F5F5F5]/40 block font-mono">Process reward: <span className="text-accent font-bold">${t.reward.toFixed(4)}</span></span>
                         </div>
                         <button 
                           onClick={() => handleLaunchTask(t)}
