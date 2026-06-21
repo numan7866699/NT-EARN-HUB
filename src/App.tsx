@@ -370,13 +370,13 @@ export default function App() {
     return `${h}h ${m}m`;
   };
 
-  const isCategoryLocked = (cat: string): boolean => {
+    const isCategoryLocked = (cat: string): boolean => {
     let ids: string[] = [];
-    if (cat === 'Watch Ads') ids = ['tk_ad_1', 'tk_ad_2', 'tk_ad_3'];
-    else if (cat === 'Short Videos') ids = ['tk_vid_1', 'tk_vid_2', 'tk_vid_3'];
-    else if (cat === 'Micro Tasks') ids = ['tk_mt_1', 'tk_mt_2', 'tk_mt_3'];
+    if (cat === 'Watch Ads') ids = ['tk_ad_1', 'tk_ad_2', 'tk_ad_3', 'tk_ad_4', 'tk_ad_5', 'tk_ad_6'];
+    else if (cat === 'Short Videos') ids = ['tk_vid_1', 'tk_vid_2', 'tk_vid_3', 'tk_vid_4', 'tk_vid_5', 'tk_vid_6'];
+    else if (cat === 'Micro Tasks') ids = ['tk_mt_1', 'tk_mt_2', 'tk_mt_3', 'tk_mt_4', 'tk_mt_5'];
     
-    // Check if ALL 3 tasks in the category are actively locked
+    // Check if ALL tasks in the category are actively locked
     return ids.length > 0 && ids.every(id => getTaskLockMs(id) > 0);
   };
   // --------------------------
@@ -400,24 +400,32 @@ export default function App() {
     const defaultVid = shortVid || 'https://www.youtube.com/shorts/3pxjN3_qBv4';
     const defaultTask = cpaLead || microTasks || 'https://www.google.com/search?q=microtasks+earn+money+at+home';
 
-        let list: Task[] = [];
+            let list: Task[] = [];
     if (cat === 'Watch Ads') {
       list = [
         { id: 'tk_ad_1', title: adsterra ? 'Adsterra Smart CPM Redirect' : 'Premium Traffic Verification Link', reward: 0.003, destination: adsterra || 'https://www.adsterra.com', category: 'Watch Ads' },
         { id: 'tk_ad_2', title: monetag ? 'Monetag Live Monetized Ad' : 'Network Scalp Node Loop', reward: 0.002, destination: monetag || 'https://www.monetag.com', category: 'Watch Ads' },
-        { id: 'tk_ad_3', title: 'Premium High-Yield Global Ad', reward: 0.005, destination: defaultAd, category: 'Watch Ads' }
+        { id: 'tk_ad_3', title: 'Premium High-Yield Global Ad', reward: 0.005, destination: defaultAd, category: 'Watch Ads' },
+        { id: 'tk_ad_4', title: 'Direct Partner Traffic Node', reward: 0.003, destination: adsterra || defaultAd, category: 'Watch Ads' },
+        { id: 'tk_ad_5', title: 'Global Network Scalp V2', reward: 0.002, destination: monetag || defaultAd, category: 'Watch Ads' },
+        { id: 'tk_ad_6', title: 'Bonus CPM Verification Limit', reward: 0.004, destination: defaultAd, category: 'Watch Ads' }
       ];
     } else if (cat === 'Short Videos') {
       list = [
         { id: 'tk_vid_1', title: shortVid ? 'Monetized Video Portal V1' : 'Short Curated Media Node V1', reward: 0.004, destination: shortVid || 'https://www.youtube.com/shorts/3pxjN3_qBv4', category: 'Short Videos' },
         { id: 'tk_vid_2', title: 'Global Stream Validation Feed', reward: 0.006, destination: defaultVid, category: 'Short Videos' },
-        { id: 'tk_vid_3', title: 'DeFi Wallet Verification Log', reward: 0.008, destination: defaultVid, category: 'Short Videos' }
+        { id: 'tk_vid_3', title: 'DeFi Wallet Verification Log', reward: 0.008, destination: defaultVid, category: 'Short Videos' },
+        { id: 'tk_vid_4', title: 'Crypto Market Stream Feed', reward: 0.005, destination: defaultVid, category: 'Short Videos' },
+        { id: 'tk_vid_5', title: 'Trending Media Cluster', reward: 0.004, destination: shortVid || defaultVid, category: 'Short Videos' },
+        { id: 'tk_vid_6', title: 'App Trailer Validation Node', reward: 0.007, destination: defaultVid, category: 'Short Videos' }
       ];
     } else {
       list = [
         { id: 'tk_mt_1', title: cpaLead ? 'CPALead Live Offerwall tasks' : 'Submit Telegram Node Engagement', reward: 0.05, destination: cpaLead || 'https://www.cpalead.com', category: 'Micro Tasks' },
         { id: 'tk_mt_2', title: microTasks ? 'CPA Content Locker Rewards' : 'Global Identity App Validation Beta', reward: 0.08, destination: microTasks || 'https://www.cpalead.com', category: 'Micro Tasks' },
-        { id: 'tk_mt_3', title: 'USDT Smart Contract Auditing Alpha', reward: 0.12, destination: defaultTask, category: 'Micro Tasks' }
+        { id: 'tk_mt_3', title: 'USDT Smart Contract Auditing', reward: 0.12, destination: defaultTask, category: 'Micro Tasks' },
+        { id: 'tk_mt_4', title: 'Survey Gateway Settlement Route', reward: 0.06, destination: cpaLead || defaultTask, category: 'Micro Tasks' },
+        { id: 'tk_mt_5', title: 'Social Media Validation Protocol', reward: 0.04, destination: microTasks || defaultTask, category: 'Micro Tasks' }
       ];
     }
     setTasksList(list);
