@@ -24,7 +24,7 @@ import {
   CheckCircle2,
   Eye,
   EyeOff,
-  Lock // NEW: Lock Icon for Category Lockdown
+  Lock 
 } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { dbService } from './dbService';
@@ -242,11 +242,15 @@ export default function App() {
           setPassword('');
         }
       } else {
+        // 🚀 FIX: Fast Login and State Force Update
         const profile = await dbService.signIn(email, password);
         if (isSandbox) {
           setCurrentUser(profile);
           loadSandboxFeeds(profile.uid);
           triggerModal('success', 'Workspace Activated', `Welcome back, test worker ${profile.fullname}!`);
+        } else {
+          setCurrentUser(profile); // This forces the screen to change immediately to Dashboard!
+          triggerModal('success', 'Workspace Activated', `Welcome back, ${profile.fullname || profile.username}!`);
         }
       }
     } catch (err: any) {
@@ -649,7 +653,7 @@ export default function App() {
         )}
       </AnimatePresence>
 
-{!currentUser && !isLoadingAuth && (
+      {!currentUser && !isLoadingAuth && (
         <div className="flex-1 flex flex-col justify-center p-6 max-w-md mx-auto w-full">
           <div className="text-center mb-8">
             <span className="font-sans text-[10px] uppercase tracking-[0.3em] opacity-50 mb-2 block">
@@ -667,6 +671,7 @@ export default function App() {
               </div>
             )}
           </div>
+
           <motion.div layout className="bg-[#111111] p-6 rounded-sm border border-white/10 shadow-xl">
             <form onSubmit={handleAuthSubmit} className="space-y-4">
               {isSignup && (
