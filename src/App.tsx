@@ -536,9 +536,27 @@ export default function App() {
     navigator.clipboard.writeText(link);
     triggerModal('success', 'Link Copied', 'Your secure affiliate referral invitation is locked into target clipboard!');
   };
+  // --- REFERRAL AGGREGATION LOGIC ---
+  const groupedReferralsMap: Record<string, { fromUser: string, date: string, commission: number }> = {};
+  const uniqueUsersSet = new Set<string>();
 
+  referralList.forEach(ref => {
+    uniqueUsersSet.add(ref.fromUser);
+    const key = `${ref.fromUser}_${ref.date}`;
+    if (!groupedReferralsMap[key]) {
+      groupedReferralsMap[key] = { fromUser: ref.fromUser, date: ref.date, commission: 0 };
+    }
+    groupedReferralsMap[key].commission += ref.commission;
+  });
+
+  const aggregatedReferrals = Object.values(groupedReferralsMap).sort((a, b) => {
+    if (a.date !== b.date) return new Date(b.date).getTime() - new Date(a.date).getTime();
+    return b.commission - a.commission;
+  });
+  const totalUniqueReferrals = uniqueUsersSet.size;
+  // ----------------------------------
   return (
-    <div className="bg-[#0A0A0A] text-[#F5F5F5] font-sans min-h-screen flex flex-col justify-between selection:bg-accent selection:text-black">
+        <div className="bg-[#0A0A0A] text-[#F5F5F5] font-sans h-[100dvh] w-full flex flex-col justify-between selection:bg-accent selection:text-black overflow-hidden">
       
       {/* Top Test Sandbox Mode Toggle Header */}
       <div className="hidden bg-[#111111] border-b border-white/10 px-4 py-2.5 flex items-center justify-between z-[60] text-xs font-medium">
