@@ -982,24 +982,29 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">My Activated Network</h3>
+                 <div className="space-y-3">
+                  <div className="flex justify-between items-baseline px-1">
+                    <h3 className="text-xs font-bold text-gray-400 uppercase tracking-[0.2em]">My Activated Network</h3>
+                    <span className="text-[10px] font-mono text-accent uppercase tracking-widest font-bold">
+                      {totalUniqueReferrals} {totalUniqueReferrals === 1 ? 'Active Node' : 'Active Nodes'}
+                    </span>
+                  </div>
                   <div className="bg-[#111111] rounded-sm border border-white/10 divide-y divide-white/10 overflow-hidden">
-                    {referralList.length === 0 ? (
+                    {aggregatedReferrals.length === 0 ? (
                       <div className="p-6 text-xs text-gray-500 text-center">No active credentials registered. Promote invitation link above.</div>
                     ) : (
-                      referralList.map((ref) => (
-                        <div key={ref.id} className="p-4 flex justify-between items-center hover:bg-white/5 transition duration-150">
+                      aggregatedReferrals.map((ref, idx) => (
+                        <div key={`${ref.fromUser}_${ref.date}_${idx}`} className="p-4 flex justify-between items-center hover:bg-white/5 transition duration-150">
                           <div className="flex items-center space-x-3">
                             <div className="w-8 h-8 rounded-full border border-accent/20 bg-accent/10 text-accent flex items-center justify-center font-serif italic text-xs font-bold uppercase">{ref.fromUser.charAt(0)}</div>
                             <div>
                               <p className="text-xs font-bold text-white">{ref.fromUser}</p>
-                              <p className="text-[9px] text-gray-500 font-mono">{ref.date}</p>
+                              <p className="text-[9px] text-gray-500 font-mono">Working Date: {ref.date}</p>
                             </div>
                           </div>
                           <div className="text-right">
                             <span className="text-xs font-bold text-accent block font-mono">+${ref.commission.toFixed(4)}</span>
-                            <span className="text-[8px] text-gray-500 uppercase tracking-widest font-bold">10% commission</span>
+                            <span className="text-[8px] text-gray-500 uppercase tracking-widest font-bold">Daily Total</span>
                           </div>
                         </div>
                       ))
