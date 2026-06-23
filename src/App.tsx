@@ -563,6 +563,28 @@ export default function App() {
   });
   const totalUniqueReferrals = uniqueUsersSet.size;
   // ----------------------------------
+    // --- MAINTENANCE MODE SWITCH ---
+  const IS_MAINTENANCE = true; // App ko wapas live karne ke liye isko false kar dijiyega
+  if (IS_MAINTENANCE) {
+    return (
+      <div className="bg-gradient-to-br from-slate-900 via-indigo-950/40 to-[#0A0A0A] text-[#F5F5F5] font-sans h-[100dvh] w-full flex flex-col items-center justify-center p-6 text-center">
+        <div className="bg-slate-800/90 backdrop-blur-md p-8 rounded-xl border border-white/10 max-w-sm w-full shadow-[0_0_50px_rgba(0,0,0,0.8)]">
+          <div className="w-16 h-16 bg-accent/10 border border-accent/20 text-accent rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="text-2xl animate-spin delay-150">⚙️</div>
+          </div>
+          <h2 className="text-lg font-bold text-white mb-3 uppercase tracking-[0.2em]">System Upgrade</h2>
+          <div className="h-px w-12 bg-accent/50 mx-auto mb-4"></div>
+          <p className="text-[11px] text-gray-400 leading-relaxed mb-6 font-mono">
+            NT Earn Hub is currently under scheduled maintenance to deploy technical fixes and security updates. Login operations are temporarily suspended.
+          </p>
+          <div className="inline-block px-5 py-2.5 bg-accent/20 border border-accent/50 text-accent font-bold font-mono text-[10px] uppercase tracking-widest rounded-sm animate-pulse">
+            Please Stand By
+          </div>
+        </div>
+      </div>
+    );
+  }
+  // --- END MAINTENANCE MODE ---
   return (
      <div className="bg-gradient-to-br from-slate-900 via-indigo-950/40 to-[#0A0A0A] text-[#F5F5F5] font-sans h-[100dvh] w-full flex flex-col justify-between selection:bg-accent selection:text-black overflow-hidden">      
       {/* Top Test Sandbox Mode Toggle Header */}
