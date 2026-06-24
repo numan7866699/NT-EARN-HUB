@@ -585,6 +585,7 @@ export default function App() {
     );
   }
   // --- END MAINTENANCE MODE ---
+  return (  
   <div className="bg-gradient-to-br from-slate-900 via-indigo-950/40 to-[#0A0A0A] text-[#F5F5F5] font-sans min-h-[100dvh] w-full flex flex-col items-center justify-center p-4 py-12 overflow-y-auto">      
       {/* Top Test Sandbox Mode Toggle Header */}
       <div className="hidden bg-slate-800/90 backdrop-blur-sm border-b border-white/10 px-4 py-2.5 flex items-center justify-between z-[60] text-xs font-medium">
