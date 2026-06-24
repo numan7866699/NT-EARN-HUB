@@ -567,7 +567,7 @@ export default function App() {
   const IS_MAINTENANCE = false; // App ko wapas live karne ke liye isko false kar dijiyega
   if (IS_MAINTENANCE) {
     return (
-      <div className="fixed inset-0 z-50 w-full h-full overflow-y-auto bg-gradient-to-br from-slate-900 via-indigo-950/40 to-[#0A0A0A] block pt-12 pb-24 px-4 text-center">
+      <div className="bg-gradient-to-br from-slate-900 via-indigo-950/40 to-[#0A0A0A] text-[#F5F5F5] font-sans h-[100dvh] w-full flex flex-col items-center justify-center p-6 text-center">
         <div className="bg-slate-800/90 backdrop-blur-md p-8 rounded-xl border border-white/10 max-w-sm w-full shadow-[0_0_50px_rgba(0,0,0,0.8)]">
           <div className="w-16 h-16 bg-accent/10 border border-accent/20 text-accent rounded-full flex items-center justify-center mx-auto mb-6">
             <div className="text-2xl animate-spin delay-150">⚙️</div>
