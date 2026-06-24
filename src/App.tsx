@@ -564,7 +564,7 @@ export default function App() {
   const totalUniqueReferrals = uniqueUsersSet.size;
   // ----------------------------------
     // --- MAINTENANCE MODE SWITCH ---
-  const IS_MAINTENANCE = true; // App ko wapas live karne ke liye isko false kar dijiyega
+  const IS_MAINTENANCE = false; // App ko wapas live karne ke liye isko false kar dijiyega
   if (IS_MAINTENANCE) {
     return (
       <div className="bg-gradient-to-br from-slate-900 via-indigo-950/40 to-[#0A0A0A] text-[#F5F5F5] font-sans h-[100dvh] w-full flex flex-col items-center justify-center p-6 text-center">
