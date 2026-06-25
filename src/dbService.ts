@@ -339,7 +339,7 @@ class DBService {
     }
   }
 
-  async completeTask(uid: string, taskId: string, taskTitle: string, reward: number): Promise<void> {
+    async completeTask(uid: string, taskId: string, taskTitle: string, reward: number): Promise<void> {
     const timestampNow = Date.now(); // SECURITY LOCK: Exact atomic time generated
 
     if (this.isSandboxMode) {
@@ -349,6 +349,15 @@ class DBService {
         profile.balance = Number((profile.balance + reward).toFixed(2));
         if (!profile.completedTasks) profile.completedTasks = {};
         profile.completedTasks[taskId] = timestampNow; // Save lock time locally
+        
+        // 🛡️ ANTI-BAN PROTOCOL: Daily Ad Counter Sync
+        const today = new Date().toISOString().split('T')[0];
+        if (profile.lastAdDate === today) {
+          profile.dailyAdCount = (profile.dailyAdCount || 0) + 1; // Aaj ke din mein +1 click
+        } else {
+          profile.dailyAdCount = 1; // Naya din shuru, counter reset to 1
+          profile.lastAdDate = today;
+        }
         
         localStorage.setItem(LOCAL_STORAGE_KEY_USER, JSON.stringify(profile));
 
@@ -360,10 +369,13 @@ class DBService {
           amount: reward,
           status: 'completed',
           details: `Completed "${taskTitle}"`,
-          date: new Date().toISOString().split('T')[0]
+          date: today // Reused 'today' variable safely
         };
         txs.push(newTx);
         localStorage.setItem(LOCAL_STORAGE_KEY_TRANSACTIONS, JSON.stringify(txs));
+      }
+      return; // Ensure sandbox execution stops here
+    }
 
         if (profile.referredBy) {
           const commission = Number((reward * 0.10).toFixed(4));
