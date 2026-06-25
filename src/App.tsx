@@ -448,37 +448,57 @@ export default function App() {
 
     const interval = setInterval(() => {
       setTaskTimeRemaining((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          handleCompleteActiveTask(task);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+          if (prev <= 1) {
+            clearInterval(interval);
+            handleCompleteActiveTask(task); // Timer poora hone par function yahan call hoga
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
 
-    setTaskIntervalId(interval);
-  };
+      setTaskIntervalId(interval);
+  }; // <-- Timer wale function ka proper End
 
+  // 🛡️ ANTI-BAN PROTOCOL FUNCTION
   const handleCompleteActiveTask = async (task: Task) => {
     if (!currentUser) return;
+
+    // Daily Ad Cap Verification
+    const DAILY_LIMIT = 50;
+    const userAdsToday = currentUser.dailyAdCount || 0; 
+    const today = new Date().toISOString().split('T')[0];
+    const lastAdDate = currentUser.lastAdDate || today;
+
+    // Agar limit poori ho chuki hai
+    if (lastAdDate === today && userAdsToday >= DAILY_LIMIT) {
+      if (taskIntervalId) clearInterval(taskIntervalId);
+      setActiveRunningTask(null);
+      triggerModal('warning', 'Daily Limit Exceeded', 'Network security protocols activated. Your daily quota of 50 tasks is complete. Please return tomorrow to protect the earning ecosystem.');
+      return;
+    }
+
     try {
-   await dbService.completeTask(currentUser.uid, task.id, task.title, task.reward);
-      triggerModal('success', 'Reward Credited!', `Verification protocols cleared. $${task.reward.toFixed(4)} added instantly to your wallet. Task safely locked for 24 hours.`);
+      // Reward Database mein add karein
+      await dbService.completeTask(currentUser.uid, task.id, task.title, task.reward);
       
-      // Auto-update UI Sync Time to reflect the exact lock instantly without waiting 60 seconds
+      triggerModal('success', 'Reward Credited!', `Verification protocols cleared. $${task.reward.toFixed(4)} added instantly to your wallet. Task safely locked.`);
+      
+      // Auto-update UI Sync Time
       setCurrentSyncTime(Date.now());
     } catch (err: any) {
       triggerModal('error', 'Earning Sync Failed', err.message || 'Database write rules restricted transaction.');
     } finally {
+      if (taskIntervalId) clearInterval(taskIntervalId); // Memory leak protection
       setActiveRunningTask(null);
     }
   };
 
+  // 🔴 CANCEL TASK FUNCTION
   const handleCancelActiveTask = () => {
     if (taskIntervalId) clearInterval(taskIntervalId);
     setActiveRunningTask(null);
-    triggerModal('info', 'Task Suspended', 'The current ad tracking or feed stream verification has been terminated. Try again.');
+    triggerModal('info', 'Task Suspended', 'The current tracking or feed stream verification has been terminated. Try again.');
   };
 
   const handleInitiateWithdrawal = async (e: React.FormEvent) => {
