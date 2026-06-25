@@ -701,7 +701,7 @@ export default function App() {
       </AnimatePresence>
 
       {!currentUser && !isLoadingAuth && (
-        <div className="flex-1 flex flex-col justify-center p-6 max-w-md mx-auto w-full">
+        <div className="flex-1 flex flex-col justify-start p-6 pt-10 pb-32 max-w-md mx-auto w-full overflow-y-auto">
           <div className="text-center mb-8">
             <span className="font-sans text-[10px] uppercase tracking-[0.3em] opacity-50 mb-2 block">
               NT Global Network
