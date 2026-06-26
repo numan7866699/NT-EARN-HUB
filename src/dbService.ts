@@ -339,9 +339,13 @@ class DBService {
     }
   }
 
-    async completeTask(uid: string, taskId: string, taskTitle: string, reward: number): Promise<void> {
+      async completeTask(uid: string, taskId: string, taskTitle: string, reward: number): Promise<void> {
     const timestampNow = Date.now(); // SECURITY LOCK: Exact atomic time generated
+    const today = new Date().toISOString().split('T')[0];
 
+    // ==========================================
+    // 🟠 SANDBOX MODE LOGIC
+    // ==========================================
     if (this.isSandboxMode) {
       const stored = localStorage.getItem(LOCAL_STORAGE_KEY_USER);
       if (stored) {
@@ -350,24 +354,15 @@ class DBService {
         if (!profile.completedTasks) profile.completedTasks = {};
         profile.completedTasks[taskId] = timestampNow; // Save lock time locally
         
-        localStorage.setItem(LOCAL_STORAGE_KEY_USER, JSON.stringify(profile));
+        // 🛡️ ANTI-BAN PROTOCOL: Daily Ad Counter Sync
+        if (profile.lastAdDate === today) {
+          profile.dailyAdCount = (profile.dailyAdCount || 0) + 1;
+        } else {
+          profile.dailyAdCount = 1;
+          profile.lastAdDate = today;
+        }
 
-        const txsStored = localStorage.getItem(LOCAL_STORAGE_KEY_TRANSACTIONS);
-        const txs = txsStored ? (JSON.parse(txsStored) as Transaction[]) : [];
-        const newTx: Transaction = {
-          id: 'tx_sb_' + Math.random().toString(36).substring(3, 8),
-          type: 'Task Reward',
-          amount: reward,
-          status: 'completed',
-          details: `Completed "${taskTitle}"`,
-          date: new Date().toISOString().split('T')[0]
-        };
-        txs.push(newTx);
-        localStorage.setItem(LOCAL_STORAGE_KEY_TRANSACTIONS, JSON.stringify(txs));
-      }
-      return; // Ensure sandbox execution stops here
-    }
-
+        // Sandbox Referral Commission Logic
         if (profile.referredBy) {
           const commission = Number((reward * 0.10).toFixed(4));
           const refsStored = localStorage.getItem(LOCAL_STORAGE_KEY_REFERRALS);
@@ -376,54 +371,83 @@ class DBService {
             id: 'ref_sb_' + Math.random().toString(36).substring(3, 8),
             fromUser: profile.fullname || profile.username,
             commission: commission,
-            date: new Date().toISOString().split('T')[0]
+            date: today
           });
           localStorage.setItem(LOCAL_STORAGE_KEY_REFERRALS, JSON.stringify(refs));
 
-          profile.refEarnings = Number((profile.refEarnings + commission).toFixed(4));
-          localStorage.setItem(LOCAL_STORAGE_KEY_USER, JSON.stringify(profile));
+          profile.refEarnings = Number(((profile.refEarnings || 0) + commission).toFixed(4));
         }
+
+        localStorage.setItem(LOCAL_STORAGE_KEY_USER, JSON.stringify(profile));
+
+        // Sandbox Transaction Logging
+        const txsStored = localStorage.getItem(LOCAL_STORAGE_KEY_TRANSACTIONS);
+        const txs = txsStored ? (JSON.parse(txsStored) as Transaction[]) : [];
+        txs.push({
+          id: 'tx_sb_' + Math.random().toString(36).substring(3, 8),
+          type: 'Task Reward',
+          amount: reward,
+          status: 'completed',
+          details: `Completed "${taskTitle}"`,
+          date: today
+        });
+        localStorage.setItem(LOCAL_STORAGE_KEY_TRANSACTIONS, JSON.stringify(txs));
       }
-    } else {
-      const userBalancePath = ref(dbInstance, `users/${uid}/balance`);
-      await set(userBalancePath, increment(reward));
+      return; // 🛑 Sandbox execution securely stops here
+    }
 
-      // ATOMIC FIX: Save the strict 24-hour lock timestamp securely into Database
-      await set(ref(dbInstance, `users/${uid}/completedTasks/${taskId}`), timestampNow);
+    // ==========================================
+    // 🟢 LIVE FIREBASE MODE LOGIC
+    // ==========================================
+    const userRef = ref(dbInstance, `users/${uid}`);
+    const userProfileSnap = await get(userRef);
+    const userData = userProfileSnap.val();
 
-      const userTxPushRef = push(ref(dbInstance, `transactions/${uid}`));
-      await set(userTxPushRef, {
-        type: 'Task Reward',
-        amount: reward,
-        status: 'completed',
-        details: `Completed "${taskTitle}"`,
-        date: new Date().toISOString().split('T')[0]
-      });
+    if (!userData) return;
 
-      const userProfileSnap = await get(ref(dbInstance, `users/${uid}`));
-      const userData = userProfileSnap.val();
+    // 🛡️ ANTI-BAN PROTOCOL: Firebase Counter Sync
+    let newAdCount = 1;
+    if (userData.lastAdDate === today) {
+      newAdCount = (userData.dailyAdCount || 0) + 1;
+    }
+
+    // Atomic Updates for User Balance and Task Limits
+    await set(ref(dbInstance, `users/${uid}/balance`), increment(reward));
+    await set(ref(dbInstance, `users/${uid}/completedTasks/${taskId}`), timestampNow);
+    await set(ref(dbInstance, `users/${uid}/dailyAdCount`), newAdCount);
+    await set(ref(dbInstance, `users/${uid}/lastAdDate`), today);
+
+    // Live Transaction Logging
+    const userTxPushRef = push(ref(dbInstance, `transactions/${uid}`));
+    await set(userTxPushRef, {
+      type: 'Task Reward',
+      amount: reward,
+      status: 'completed',
+      details: `Completed "${taskTitle}"`,
+      date: today
+    });
       
-      if (userData && userData.referredBy) {
-        const commission = Number((reward * 0.10).toFixed(4));
-        const referrerUsername = String(userData.referredBy).toLowerCase().trim();
+    // Live Referral Commission Logic
+    if (userData.referredBy) {
+      const commission = Number((reward * 0.10).toFixed(4));
+      const referrerUsername = String(userData.referredBy).toLowerCase().trim();
 
-        const usersRef = ref(dbInstance, 'users');
-        const referrerQuery = query(usersRef, orderByChild('username'), equalTo(referrerUsername));
-        const referrerSnap = await get(referrerQuery);
+      const usersRef = ref(dbInstance, 'users');
+      const referrerQuery = query(usersRef, orderByChild('username'), equalTo(referrerUsername));
+      const referrerSnap = await get(referrerQuery);
 
-        if (referrerSnap.exists()) {
-          const referrerUid = Object.keys(referrerSnap.val())[0];
-          
-          await set(ref(dbInstance, `users/${referrerUid}/balance`), increment(commission));
-          await set(ref(dbInstance, `users/${referrerUid}/refEarnings`), increment(commission));
+      if (referrerSnap.exists()) {
+        const referrerUid = Object.keys(referrerSnap.val())[0];
+        
+        await set(ref(dbInstance, `users/${referrerUid}/balance`), increment(commission));
+        await set(ref(dbInstance, `users/${referrerUid}/refEarnings`), increment(commission));
 
-          const refDetailPushRef = push(ref(dbInstance, `referrals/${referrerUid}`));
-          await set(refDetailPushRef, {
-            fromUser: userData.fullname || userData.username || 'Ecosystem Node',
-            commission: commission,
-            date: new Date().toISOString().split('T')[0]
-          });
-        }
+        const refDetailPushRef = push(ref(dbInstance, `referrals/${referrerUid}`));
+        await set(refDetailPushRef, {
+          fromUser: userData.fullname || userData.username || 'Ecosystem Node',
+          commission: commission,
+          date: today
+        });
       }
     }
   }
