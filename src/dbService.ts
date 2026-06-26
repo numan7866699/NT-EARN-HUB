@@ -350,15 +350,6 @@ class DBService {
         if (!profile.completedTasks) profile.completedTasks = {};
         profile.completedTasks[taskId] = timestampNow; // Save lock time locally
         
-        // 🛡️ ANTI-BAN PROTOCOL: Daily Ad Counter Sync
-        const today = new Date().toISOString().split('T')[0];
-        if (profile.lastAdDate === today) {
-          profile.dailyAdCount = (profile.dailyAdCount || 0) + 1; // Aaj ke din mein +1 click
-        } else {
-          profile.dailyAdCount = 1; // Naya din shuru, counter reset to 1
-          profile.lastAdDate = today;
-        }
-        
         localStorage.setItem(LOCAL_STORAGE_KEY_USER, JSON.stringify(profile));
 
         const txsStored = localStorage.getItem(LOCAL_STORAGE_KEY_TRANSACTIONS);
@@ -369,7 +360,7 @@ class DBService {
           amount: reward,
           status: 'completed',
           details: `Completed "${taskTitle}"`,
-          date: today // Reused 'today' variable safely
+          date: new Date().toISOString().split('T')[0]
         };
         txs.push(newTx);
         localStorage.setItem(LOCAL_STORAGE_KEY_TRANSACTIONS, JSON.stringify(txs));
