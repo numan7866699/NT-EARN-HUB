@@ -983,6 +983,14 @@ export default function App() {
                 </div>
 
                 <div className="flex flex-col bg-[#111] border border-white/10 rounded-sm">
+                {tasksList.length === 0 && (
+           <div className="p-10 text-center space-y-3">
+          <span className="block text-accent font-bold tracking-widest text-sm uppercase">Integration in Progress 🚀</span>
+          <span className="block text-gray-500 text-[10px] font-mono leading-relaxed max-w-xs mx-auto">
+            Premium video partners are currently being synced with your ecosystem node. High-yield video tasks will be available shortly.
+          </span>
+        </div>
+      )}
                   {tasksList.map((t, idx) => {
                     const lockedTimeMs = getTaskLockMs(t.id);
                     const isTaskLocked = lockedTimeMs > 0;
