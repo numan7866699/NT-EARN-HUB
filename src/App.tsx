@@ -470,7 +470,22 @@ export default function App() {
     setActiveRunningTask(task);
     setTaskTimeRemaining(length);
     
-    const win = window.open(task.destination, '_blank');
+        // 🛡️ ANTI-BAN SMART ROTATOR (Only for Ads)
+    let linkToOpen = task.destination;
+    
+    if (task.id.startsWith('tk_ad') && monetizationSettings) {
+      const DYNAMIC_ROTATOR_LINKS = [
+        monetizationSettings.adsterraDirectLink,
+        monetizationSettings.monetagSmartlink
+      ].filter(link => link && link.trim() !== "");
+      
+      if (DYNAMIC_ROTATOR_LINKS.length > 0) {
+        linkToOpen = DYNAMIC_ROTATOR_LINKS[adClickCount % DYNAMIC_ROTATOR_LINKS.length];
+        setAdClickCount(prev => prev + 1); // Counter +1 for next link
+      }
+    }
+    
+    const win = window.open(linkToOpen, '_blank');
     if (!win) {
       console.warn("Popup blocked. Continuing task inside responsive embedded virtual tracker frame.");
     }
