@@ -431,32 +431,29 @@ export default function App() {
     const defaultVid = shortVid || 'https://www.youtube.com/shorts/3pxjN3_qBv4';
     const defaultTask = cpaLead || microTasks || 'https://www.google.com/search?q=microtasks+earn+money+at+home';
 
-            let list: Task[] = [];
+    let list: Task[] = [];
     if (cat === 'Watch Ads') {
-      list = [
-        { id: 'tk_ad_1', title: adsterra ? 'Adsterra Smart CPM Redirect' : 'Premium Traffic Verification Link', reward: 0.003, destination: adsterra || 'https://www.adsterra.com', category: 'Watch Ads' },
-        { id: 'tk_ad_2', title: monetag ? 'Monetag Live Monetized Ad' : 'Network Scalp Node Loop', reward: 0.002, destination: monetag || 'https://www.monetag.com', category: 'Watch Ads' },
-        { id: 'tk_ad_3', title: 'Premium High-Yield Global Ad', reward: 0.005, destination: defaultAd, category: 'Watch Ads' },
-        { id: 'tk_ad_4', title: 'Direct Partner Traffic Node', reward: 0.003, destination: adsterra || defaultAd, category: 'Watch Ads' },
-        { id: 'tk_ad_5', title: 'Global Network Scalp V2', reward: 0.002, destination: monetag || defaultAd, category: 'Watch Ads' },
-        { id: 'tk_ad_6', title: 'Bonus CPM Verification Limit', reward: 0.004, destination: defaultAd, category: 'Watch Ads' }
-      ];
+      // Loop laga kar automatically 50 Ads generate kar diye hain
+      const titles = ["Global Media Ad", "Premium Network Verification", "Smart Route Node", "High-Yield Validator", "Direct Traffic Node"];
+      for (let i = 1; i <= 50; i++) {
+        list.push({
+          id: `tk_ad_${i}`,
+          title: `${titles[i % titles.length]} - Phase ${i}`, 
+          reward: i % 3 === 0 ? 0.005 : 0.003, // Har tesre ad ka reward thora high hoga
+          destination: defaultAd,
+          category: 'Watch Ads'
+        });
+      }
     } else if (cat === 'Short Videos') {
-      list = [
-        { id: 'tk_vid_1', title: shortVid ? 'Monetized Video Portal V1' : 'Short Curated Media Node V1', reward: 0.004, destination: shortVid || 'https://www.youtube.com/shorts/3pxjN3_qBv4', category: 'Short Videos' },
-        { id: 'tk_vid_2', title: 'Global Stream Validation Feed', reward: 0.006, destination: defaultVid, category: 'Short Videos' },
-        { id: 'tk_vid_3', title: 'DeFi Wallet Verification Log', reward: 0.008, destination: defaultVid, category: 'Short Videos' },
-        { id: 'tk_vid_4', title: 'Crypto Market Stream Feed', reward: 0.005, destination: defaultVid, category: 'Short Videos' },
-        { id: 'tk_vid_5', title: 'Trending Media Cluster', reward: 0.004, destination: shortVid || defaultVid, category: 'Short Videos' },
-        { id: 'tk_vid_6', title: 'App Trailer Validation Node', reward: 0.007, destination: defaultVid, category: 'Short Videos' }
-      ];
+      list = []; // Isko khali chhora hai taake agle step mein message dikhayen
     } else {
+      // MICRO TASKS (CPAGrip)
       list = [
-        { id: 'tk_mt_1', title: cpaLead ? 'CPALead Live Offerwall tasks' : 'Submit Telegram Node Engagement', reward: 0.05, destination: cpaLead || 'https://www.cpalead.com', category: 'Micro Tasks' },
-        { id: 'tk_mt_2', title: microTasks ? 'CPA Content Locker Rewards' : 'Global Identity App Validation Beta', reward: 0.08, destination: microTasks || 'https://www.cpalead.com', category: 'Micro Tasks' },
-        { id: 'tk_mt_3', title: 'USDT Smart Contract Auditing', reward: 0.12, destination: defaultTask, category: 'Micro Tasks' },
-        { id: 'tk_mt_4', title: 'Survey Gateway Settlement Route', reward: 0.06, destination: cpaLead || defaultTask, category: 'Micro Tasks' },
-        { id: 'tk_mt_5', title: 'Social Media Validation Protocol', reward: 0.04, destination: microTasks || defaultTask, category: 'Micro Tasks' }
+        { id: 'tk_nt_1', title: 'Premium App Installation', reward: 0.15, destination: defaultTask, category: 'Micro Tasks' },
+        { id: 'tk_nt_2', title: 'Global Identity Validation', reward: 0.20, destination: defaultTask, category: 'Micro Tasks' },
+        { id: 'tk_nt_3', title: 'Smart Contract Auditing', reward: 0.12, destination: defaultTask, category: 'Micro Tasks' },
+        { id: 'tk_nt_4', title: 'Survey Gateway Settlement', reward: 0.08, destination: defaultTask, category: 'Micro Tasks' },
+        { id: 'tk_nt_5', title: 'Social Media Validation', reward: 0.04, destination: defaultTask, category: 'Micro Tasks' }
       ];
     }
     setTasksList(list);
