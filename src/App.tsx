@@ -100,7 +100,38 @@ export default function App() {
 
   const [customPicUrl, setCustomPicUrl] = useState<string>('');
   const [updatingPass, setUpdatingPass] = useState<boolean>(false);
+      // ANTI-BAN: Smart Link Rotator State
+  const [adClickCount, setAdClickCount] = useState(0);
 
+  // ANTI-BAN: Dynamic Smart Ad Click Function
+  const handleSmartAdClick = () => {
+    // Agar internet slow hai aur settings load nahi huin toh error rokein
+    if (!monetizationSettings) {
+      triggerModal('warning', 'Loading', 'Monetization protocols are syncing. Please try again in a few seconds.');
+      return;
+    }
+
+    // Sirf Adsterra aur Monetag wale 4 links ka rotator banayen (CPAGrip ko ignore karein)
+    const DYNAMIC_ROTATOR_LINKS = [
+      monetizationSettings.adsterraDirectLink,       // Adsterra 1
+      monetizationSettings.monetagSmartlink,         // Monetag 1
+      monetizationSettings.shortVideoFeed,           // Adsterra 2
+      monetizationSettings.microTasksOfferwall       // Monetag 2
+    ].filter(link => link && link.trim() !== "");    // Jo link admin ne khali chhora ho, usay rotator se nikal dein
+
+    // Agar admin ne koi link bhi nahi lagaya
+    if (DYNAMIC_ROTATOR_LINKS.length === 0) {
+      triggerModal('error', 'No Ads Available', 'Admin has not configured ad links yet.');
+      return;
+    }
+
+    // Rotator Engine: Ek ke baad ek link uthayega aur change karega
+    const nextLink = DYNAMIC_ROTATOR_LINKS[adClickCount % DYNAMIC_ROTATOR_LINKS.length];
+    
+    setAdClickCount(prev => prev + 1);
+    window.open(nextLink, '_blank');
+  };
+  
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const ref = params.get('ref');
