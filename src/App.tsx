@@ -893,19 +893,31 @@ export default function App() {
                   <h2 className="text-lg font-serif italic text-white tracking-tight">Welcome to <span className="text-accent font-sans font-bold tracking-tight uppercase not-italic">NT EARN HUB</span> <span className="text-accent">🚀</span></h2>
                 </div>
 
-                <div className="bg-[#111111] border border-white/10 p-6 rounded-sm text-left relative overflow-hidden">
-                  <span className="font-sans text-[10px] uppercase opacity-40 tracking-[0.3em] block mb-4">Accumulated Capital</span>
-                  <div className="flex justify-between items-end">
-                    <div className="relative">
-                      <span className="text-6xl font-serif italic text-accent leading-none">${Math.floor(currentUser.balance)}</span>
-                      <span className="text-2xl font-sans font-light opacity-60">.{(currentUser.balance % 1).toFixed(2).substring(2)}</span>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-[10px] uppercase opacity-40 tracking-widest block font-bold mb-1">Pending Funds</span>
-                      <span className="text-lg font-sans font-medium text-amber-500 font-mono">${currentUser.pending.toFixed(2)}</span>
-                    </div>
-                  </div>
-                </div>
+                {/* SHINY FLOATING BALANCE HEADER */}
+<div className="flex justify-between items-center bg-gradient-to-r from-pink-900/90 to-rose-900/90 border border-pink-500/50 rounded-full px-8 py-6 mb-8 shadow-[0_10px_30px_rgba(225,29,72,0.4)] backdrop-blur-md">
+  
+  {/* Main Balance */}
+  <div className="flex flex-col">
+    <span className="text-[10px] text-pink-300 font-bold tracking-widest uppercase mb-1">Available Balance</span>
+    <div className="relative flex items-baseline">
+      <span className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-pink-200 leading-none drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">
+        ${Math.floor(currentUser?.balance || 0)}
+      </span>
+      <span className="text-2xl font-bold text-pink-300 ml-1">
+        .{(currentUser?.balance % 1)?.toFixed(2).substring(2) || '00'}
+      </span>
+    </div>
+  </div>
+
+  {/* Pending Funds (Separated by a glowing line) */}
+  <div className="text-right border-l-2 border-pink-500/40 pl-6">
+    <span className="text-[10px] text-pink-300 uppercase tracking-widest font-bold mb-1 block">Pending Funds</span>
+    <span className="text-2xl font-black text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">
+      ${(currentUser?.pending || 0).toFixed(2)}
+    </span>
+  </div>
+
+</div>
 
                 <div className="text-left">
                   <div className="flex justify-between items-baseline mb-4">
