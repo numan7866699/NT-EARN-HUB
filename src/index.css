@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -6,5 +6,15 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
   --font-serif: "Playfair Display", Georgia, serif;
   --font-display: "Playfair Display", Georgia, serif;
-  --color-accent: #C1FF72;
+  /* Accent color ab pink/rose theme ke sath sync ho gaya hai */
+  --color-accent: #e11d48; 
+}
+
+/* GLOBAL PREMIUM DARK THEME */
+body, html {
+  background-color: #050505 !important;
+  background-image: radial-gradient(circle at 50% 0%, #1a0b12 0%, #050505 70%) !important;
+  background-attachment: fixed !important;
+  color: #ffffff;
+  min-height: 100vh;
 }
