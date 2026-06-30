@@ -782,7 +782,7 @@ export default function App() {
             )}
           </div>
 
-          <motion.div layout className="bg-[#111111] p-6 rounded-sm border border-white/10 shadow-xl">
+          <motion.div layout className="bg-[#150a0d]/90 backdrop-blur-xl border border-pink-500/20 p-8 rounded-3xl shadow-[0_10px_40px_rgba(225,29,72,0.15)] relative overflow-hidden z-10">
             <form onSubmit={handleAuthSubmit} className="space-y-4">
               {isSignup && (
                 <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
