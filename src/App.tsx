@@ -829,7 +829,7 @@ export default function App() {
               {isSignup && (
                 <div>
                   <label className="text-[9px] font-bold tracking-widest text-[#F5F5F5]/50 uppercase block mb-1">Referral Code (Optional)</label>
-                  <input type="text" placeholder="Ref handler" value={referralCodeInput} onChange={(e) => setReferralCodeInput(e.target.value)} className="w-full bg-[#0A0A0A] p-4 rounded-sm border border-white/10 focus:border-accent outline-none text-xs text-accent tracking-wide font-mono transition"/>
+                  <input type="text" placeholder="Ref handler" value={referralCodeInput} onChange={(e) => setReferralCodeInput(e.target.value)} className="w-full bg-[#0A0A0A] p-4 rounded-xl border border-white/10 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 outline-none text-xs text-white transition-all" />
                 </div>
               )}
 
