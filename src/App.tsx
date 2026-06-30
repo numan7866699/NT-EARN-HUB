@@ -792,11 +792,11 @@ export default function App() {
                   </div>
                   <div>
                     <label className="text-[9px] font-bold tracking-widest text-[#F5F5F5]/50 uppercase block mb-1">Unique Username</label>
-                    <input type="text" placeholder="e.g., janedoe" value={username} onChange={(e) => setUsername(e.target.value)} className="w-full bg-[#0A0A0A] p-4 rounded-sm border border-white/10 focus:border-accent outline-none text-xs text-white transition"/>
+                    <input type="text" placeholder="e.g., janedoe" value={username} onChange={(e) => setUsername(e.target.value)} className="w-full bg-[#0A0A0A] p-4 rounded-xl border border-white/10 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 outline-none text-xs text-white transition-all"/>
                   </div>
                   <div>
                     <label className="text-[9px] font-bold tracking-widest text-[#F5F5F5]/50 uppercase block mb-1">Select Country</label>
-                    <select value={country} onChange={(e) => setCountry(e.target.value)} className="w-full bg-[#0A0A0A] p-4 rounded-sm border border-white/10 focus:border-accent outline-none text-xs text-white transition appearance-none">
+                    <select value={country} onChange={(e) => setCountry(e.target.value)} className="w-full bg-[#0A0A0A] p-4 rounded-xl border border-white/10 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 outline-none text-xs text-white transition-all appearance-none">
                       <option value="" disabled>Choose Your Country</option>
                       <option value="Pakistan">Pakistan</option>
                       <option value="India">India</option>
