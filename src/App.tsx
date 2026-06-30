@@ -835,8 +835,8 @@ export default function App() {
 
               <div className="pt-4 flex flex-col space-y-3">
                 <button type="submit" disabled={isAuthProcessing} className={`w-full bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 text-white font-black tracking-widest text-sm py-4 rounded-2xl shadow-[0_0_20px_rgba(225,29,72,0.4)] transition-all transform hover:scale-[1.02] ${isAuthProcessing ? 'opacity-50 cursor-not-allowed scale-100' : ''}`}>
-                {isAuthProcessing ? 'PROCESSING...' : (isSignup ? 'CREATE SECURE ACCOUNT' : 'SIGN IN WORKSPACE')}
-                </button>
+  {isAuthProcessing ? 'PROCESSING...' : (isSignup ? 'CREATE SECURE ACCOUNT' : 'SIGN IN WORKSPACE')}
+</button>
                 
                 <div className="flex justify-between items-center text-[10px] text-gray-400 font-bold uppercase tracking-widest px-1">
                   <button type="button" onClick={() => { setIsSignup(!isSignup); setPassword(''); }} disabled={isAuthProcessing} className="hover:text-accent underline transition disabled:opacity-50">
