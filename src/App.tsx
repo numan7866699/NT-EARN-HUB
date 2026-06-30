@@ -788,7 +788,7 @@ export default function App() {
                 <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
                   <div>
                     <label className="text-[9px] font-bold tracking-widest text-[#F5F5F5]/50 uppercase block mb-1">Full Name (As per ID)</label>
-                    <input type="text" placeholder="e.g., JANE DOE" value={fullname} onChange={(e) => setFullname(e.target.value)} className="w-full bg-[#0A0A0A] p-4 rounded-xl border border-white/10 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 outline-none text-xs text-white transition-all"
+                    <input type="text" placeholder="e.g., JANE DOE" value={fullname} onChange={(e) => setFullname(e.target.value)} className="w-full bg-[#0A0A0A] p-4 rounded-xl border border-white/10 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 outline-none text-xs text-white transition-all" />
                   </div>
                   <div>
                     <label className="text-[9px] font-bold tracking-widest text-[#F5F5F5]/50 uppercase block mb-1">Unique Username</label>
